@@ -1,7 +1,7 @@
 package org.example.pokemonmasterapi.controllers;
 
 import lombok.AllArgsConstructor;
-import org.example.pokemonmasterapi.classes.Car;
+import org.example.pokemonmasterapi.model.Car;
 import org.example.pokemonmasterapi.repositories.CarRepository;
 import org.springframework.web.bind.annotation.*;
 

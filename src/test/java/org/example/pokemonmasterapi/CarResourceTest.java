@@ -1,6 +1,6 @@
 package org.example.pokemonmasterapi;
 
-import org.example.pokemonmasterapi.classes.Car;
+import org.example.pokemonmasterapi.model.Car;
 import org.example.pokemonmasterapi.repositories.CarRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

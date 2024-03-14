@@ -1,4 +1,4 @@
-package org.example.pokemonmasterapi.classes;
+package org.example.pokemonmasterapi.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

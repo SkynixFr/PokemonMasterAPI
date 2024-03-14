@@ -1,7 +1,7 @@
 package org.example.pokemonmasterapi.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
-import org.example.pokemonmasterapi.classes.Salutations;
+import org.example.pokemonmasterapi.model.Salutations;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
