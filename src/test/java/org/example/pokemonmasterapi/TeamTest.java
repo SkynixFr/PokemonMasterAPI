@@ -38,4 +38,33 @@ class TeamTest {
         response.andExpect(status().isCreated());
         response.andExpect(jsonPath("$.name").value("Team Rocket"));
     }
+
+    @Test
+    public void addTeamReturnBadRequestStatus() throws Exception {
+        // Given
+
+        // When
+        var response = mockMvc.perform(post("/teams")
+                .content("{\"name\": \"\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Then
+        response.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void addTeamReturnConflictStatus() throws Exception {
+        // Given
+        mockMvc.perform(post("/teams")
+                .content("{\"name\": \"Team Rocket\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // When
+        var response = mockMvc.perform(post("/teams")
+                .content("{\"name\": \"Team Rocket\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Then
+        response.andExpect(status().isConflict());
+    }
 }
