@@ -50,6 +50,7 @@ class TeamTest {
 
         // Then
         response.andExpect(status().isBadRequest());
+        response.andExpect(jsonPath("$.message").value("Name is required"));
     }
 
     @Test
@@ -66,5 +67,7 @@ class TeamTest {
 
         // Then
         response.andExpect(status().isConflict());
+        response.andExpect(jsonPath("$.message").value("Team already exists"));
+
     }
 }
