@@ -36,7 +36,7 @@ class TeamTest {
 
         // Then
         response.andExpect(status().isCreated());
-        response.andExpect(jsonPath("$.name").value("Team Rocket"));
+        response.andExpect(content().string("Team created"));
     }
 
     @Test
@@ -50,7 +50,7 @@ class TeamTest {
 
         // Then
         response.andExpect(status().isBadRequest());
-        response.andExpect(jsonPath("$.message").value("Name is required"));
+        response.andExpect(content().string("Name is required"));
     }
 
     @Test
@@ -67,7 +67,7 @@ class TeamTest {
 
         // Then
         response.andExpect(status().isConflict());
-        response.andExpect(jsonPath("$.message").value("Team already exists"));
+        response.andExpect(content().string("Team already exists"));
 
     }
 }
