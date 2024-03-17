@@ -38,6 +38,6 @@ public class TeamController {
         if (team.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Team not found");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(team);
+        return ResponseEntity.status(HttpStatus.OK).body(team.get(0));
     }
 }
