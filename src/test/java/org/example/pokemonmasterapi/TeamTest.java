@@ -117,4 +117,31 @@ class TeamTest {
         response.andExpect(status().isNotFound());
         response.andExpect(content().string("Team not found"));
     }
+
+    @Test
+    public void deleteTeamOkStatus() throws  Exception {
+        // Given
+        mockMvc.perform(post("/teams")
+                .content("{\"name\": \"Team Rocket\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // When
+        var response = mockMvc.perform(delete("/teams/Team Rocket"));
+
+        // Then
+        response.andExpect(status().isOk());
+        response.andExpect(content().string("Team deleted"));
+    }
+
+    @Test
+    public void deleteTeamNotFoundStatus() throws  Exception {
+        // Given
+
+        // When
+        var response = mockMvc.perform(delete("/teams/Team Rocket"));
+
+        // Then
+        response.andExpect(status().isNotFound());
+        response.andExpect(content().string("Team not found"));
+    }
 }

@@ -40,4 +40,14 @@ public class TeamController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(team.get(0));
     }
+
+    @DeleteMapping("/{name}")
+    public ResponseEntity<Object> deleteTeam(@PathVariable String name) {
+        var team = teamRepository.findByName(name);
+        if (team.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Team not found");
+        }
+        teamRepository.delete(team.get(0));
+        return ResponseEntity.status(HttpStatus.OK).body("Team deleted");
+    }
 }
