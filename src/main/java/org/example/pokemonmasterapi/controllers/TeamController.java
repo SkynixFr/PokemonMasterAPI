@@ -15,8 +15,8 @@ public class TeamController {
 
     @PostMapping
     public ResponseEntity<Object> addTeam(@RequestBody Team team) {
-        if (team.getName() == null || team.getName().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Name is required");
+        if (team.getName() == null || team.getAvatar() == null || team.getName().isEmpty() || team.getAvatar().isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing name or avatar");
         }
 
         if (!teamRepository.findByName(team.getName()).isEmpty()) {

@@ -32,7 +32,7 @@ class TeamTest {
 
         // When
         var response = mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\"}")
+                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
@@ -46,24 +46,24 @@ class TeamTest {
 
         // When
         var response = mockMvc.perform(post("/teams")
-                .content("{\"name\": \"\"}")
+                .content("{\"name\": \"\",\"avatar\": \"\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
         response.andExpect(status().isBadRequest());
-        response.andExpect(content().string("Name is required"));
+        response.andExpect(content().string("Missing name or avatar"));
     }
 
     @Test
     public void addTeamReturnConflictStatus() throws Exception {
         // Given
         mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\"}")
+                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When
         var response = mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\"}")
+                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
@@ -76,10 +76,10 @@ class TeamTest {
     public void returnAllTeamsOkStatus() throws Exception {
         // Given
         mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\"}")
+                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
         mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Aqua\"}")
+                .content("{\"name\": \"Team Aqua\",\"avatar\": \"~/public/images/avatars/TeamAqua.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When
@@ -95,7 +95,7 @@ class TeamTest {
     public void returnOneTeamOkStatus() throws  Exception {
         // Given
         mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\"}")
+                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When
@@ -122,7 +122,7 @@ class TeamTest {
     public void deleteTeamOkStatus() throws  Exception {
         // Given
         mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\"}")
+                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When
