@@ -2,6 +2,7 @@ package org.example.pokemonmasterapi.controllers;
 
 import lombok.AllArgsConstructor;
 import org.example.pokemonmasterapi.model.Team;
+import org.example.pokemonmasterapi.model.Pokemon;
 import org.example.pokemonmasterapi.repositories.TeamRepository;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -49,5 +50,22 @@ public class TeamController {
         }
         teamRepository.delete(team.get(0));
         return ResponseEntity.status(HttpStatus.OK).body("Team deleted");
+    }
+
+    @PostMapping("/{name}/pokemons/{pokemonName}")
+    public ResponseEntity<Object> addPokemon(@PathVariable String name, @PathVariable String pokemonName) {
+        var team = teamRepository.findByName(name);
+        if (team.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Team not found");
+        }
+
+        var pokemons = team.get(0).getPokemons();
+        if (pokemons.stream().anyMatch(pokemon -> pokemon.getName().equals(pokemonName))) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Pokemon already exists");
+        }
+
+        pokemons.add(new Pokemon(pokemonName));
+        teamRepository.save(team.get(0));
+        return ResponseEntity.status(HttpStatus.CREATED).body("Pokemon added");
     }
 }

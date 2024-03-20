@@ -144,4 +144,47 @@ class TeamTest {
         response.andExpect(status().isNotFound());
         response.andExpect(content().string("Team not found"));
     }
+
+    @Test
+    public void addPokemonReturnCreatedStatus() throws Exception {
+        // Given
+        mockMvc.perform(post("/teams")
+                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // When
+        var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu"));
+
+        // Then
+        response.andExpect(status().isCreated());
+        response.andExpect(content().string("Pokemon added"));
+    }
+
+    @Test
+    public void addPokemonReturnNotFoundStatus() throws Exception {
+        // Given
+
+        // When
+        var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu"));
+
+        // Then
+        response.andExpect(status().isNotFound());
+        response.andExpect(content().string("Team not found"));
+    }
+
+    @Test
+    public void addPokemonReturnConflictStatus() throws Exception {
+        // Given
+        mockMvc.perform(post("/teams")
+                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu"));
+
+        // When
+        var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu"));
+
+        // Then
+        response.andExpect(status().isConflict());
+        response.andExpect(content().string("Pokemon already exists"));
+    }
 }
