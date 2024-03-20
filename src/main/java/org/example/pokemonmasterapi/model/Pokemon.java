@@ -9,6 +9,5 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Pokemon {
-    @Id
     private String name;
 }
