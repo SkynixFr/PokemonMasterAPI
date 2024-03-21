@@ -151,9 +151,13 @@ class TeamTest {
         mockMvc.perform(post("/teams")
                 .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
-
-        // When
-        var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu"));
+        var Moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
+        var Item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
+        var Stats = "{\"hp\": 35,\"attack\": 55,\"defense\": 40,\"specialAttack\": 50,\"specialDefense\": 50,\"speed\": 90}";
+        var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
+        var Pokemon = "{\"name\": \"Pikachu\",\"type\": \"Electric\",\"type2\": \"\",\"level\": 5,\"sex\": \"Male\",\"isShiny\": false,\"pokedexNumber\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"Nature\": \"Brave\",\"moves\": " + Moves + ",\"Item\": " + Item + ",\"stats\": " + Stats + ",\"IV\": 0,\"EV\": 0}";
+         // When
+        var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(Pokemon));
 
         // Then
         response.andExpect(status().isCreated());
@@ -165,7 +169,12 @@ class TeamTest {
         // Given
 
         // When
-        var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu"));
+        var Moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
+        var Item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
+        var Stats = "{\"hp\": 35,\"attack\": 55,\"defense\": 40,\"specialAttack\": 50,\"specialDefense\": 50,\"speed\": 90}";
+        var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
+        var Pokemon = "{\"name\": \"Pikachu\",\"type\": \"Electric\",\"type2\": \"\",\"level\": 5,\"sex\": \"Male\",\"isShiny\": false,\"pokedexNumber\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"Nature\": \"Brave\",\"moves\": " + Moves + ",\"Item\": " + Item + ",\"stats\": " + Stats + ",\"IV\": 0,\"EV\": 0}";
+        var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(Pokemon));
 
         // Then
         response.andExpect(status().isNotFound());
@@ -175,13 +184,19 @@ class TeamTest {
     @Test
     public void addPokemonReturnConflictStatus() throws Exception {
         // Given
+        var Moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
+        var Item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
+        var Stats = "{\"hp\": 35,\"attack\": 55,\"defense\": 40,\"specialAttack\": 50,\"specialDefense\": 50,\"speed\": 90}";
+        var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
+        var Pokemon = "{\"name\": \"Pikachu\",\"type\": \"Electric\",\"type2\": \"\",\"level\": 5,\"sex\": \"Male\",\"isShiny\": false,\"pokedexNumber\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"Nature\": \"Brave\",\"moves\": " + Moves + ",\"Item\": " + Item + ",\"stats\": " + Stats + ",\"IV\": 0,\"EV\": 0}";
         mockMvc.perform(post("/teams")
                 .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
-        mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu"));
+        mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(Pokemon));
 
         // When
-        var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu"));
+
+        var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(Pokemon));
 
         // Then
         response.andExpect(status().isConflict());

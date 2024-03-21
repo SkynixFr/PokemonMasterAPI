@@ -7,6 +7,8 @@ import org.example.pokemonmasterapi.repositories.TeamRepository;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/teams")
@@ -53,7 +55,7 @@ public class TeamController {
     }
 
     @PostMapping("/{name}/pokemons/{pokemonName}")
-    public ResponseEntity<Object> addPokemon(@PathVariable String name, @PathVariable String pokemonName) {
+    public ResponseEntity<Object> addPokemon(@PathVariable String name, @PathVariable String pokemonName, @RequestBody Pokemon pokemonData) {
         var team = teamRepository.findByName(name);
         if (team.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Team not found");
@@ -63,8 +65,9 @@ public class TeamController {
         if (pokemons.stream().anyMatch(pokemon -> pokemon.getName().equals(pokemonName))) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Pokemon already exists");
         }
-
-        pokemons.add(new Pokemon(pokemonName));
+        var Pokemon = new Pokemon(pokemonData.getName(),pokemonData.getType(),pokemonData.getType2(),pokemonData.getLevel(),pokemonData.getDescription(),pokemonData.getAbility(),pokemonData.getNature(),pokemonData.getSex(),pokemonData.isShiny(),
+                pokemonData.getPokedexNumber(),pokemonData.getMoves(),pokemonData.getItem(),pokemonData.getStats(),pokemonData.getIV(),pokemonData.getEV());
+        pokemons.add(Pokemon);
         teamRepository.save(team.get(0));
         return ResponseEntity.status(HttpStatus.CREATED).body("Pokemon added");
     }
