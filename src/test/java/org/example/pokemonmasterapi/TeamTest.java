@@ -156,7 +156,7 @@ class TeamTest {
         var Item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
         var Stats = "{\"hp\": 35,\"attack\": 55,\"defense\": 40,\"spAttack\": 50,\"spDefense\": 50,\"speed\": 90,\"iv\": 0,\"ev\": 0}";
         var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
-        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + type + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"pokedex\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + Moves + ",\"item\": " + Item + ",\"stats\": " + Stats + "}";
+        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + type + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + Moves + ",\"item\": " + Item + ",\"stats\": " + Stats + "}";
         // When
         var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
 
@@ -175,7 +175,7 @@ class TeamTest {
         var Item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
         var Stats = "{\"hp\": 35,\"attack\": 55,\"defense\": 40,\"spAttack\": 50,\"spDefense\": 50,\"speed\": 90,\"iv\": 0,\"ev\": 0}";
         var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
-        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + type + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"pokedex\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + Moves + ",\"item\": " + Item + ",\"stats\": " + Stats + "}";
+        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + type + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + Moves + ",\"item\": " + Item + ",\"stats\": " + Stats + "}";
         var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
 
         // Then
@@ -191,7 +191,7 @@ class TeamTest {
         var Item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
         var Stats = "{\"hp\": 35,\"attack\": 55,\"defense\": 40,\"spAttack\": 50,\"spDefense\": 50,\"speed\": 90,\"iv\": 0,\"ev\": 0}";
         var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
-        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + type + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"pokedex\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + Moves + ",\"item\": " + Item + ",\"stats\": " + Stats + "}";
+        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + type + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + Moves + ",\"item\": " + Item + ",\"stats\": " + Stats + "}";
         mockMvc.perform(post("/teams")
                 .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
