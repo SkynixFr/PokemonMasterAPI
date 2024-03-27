@@ -19,5 +19,4 @@ public class Pokemon {
     private Move[] moves;
     private Item item;
     private Stats stats;
-    private Sprite sprites;
 }

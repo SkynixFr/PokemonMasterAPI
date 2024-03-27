@@ -64,7 +64,7 @@ public class TeamController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Pokemon already exists");
         }
         var pokemon = new Pokemon(pokemonName, pokemonData.getType(), pokemonData.getLevel(), pokemonData.getAbility(), pokemonData.getNature(),
-                pokemonData.getGender(), pokemonData.isShiny(), pokemonData.getId(), pokemonData.getMoves(), pokemonData.getItem(), pokemonData.getStats(), pokemonData.getSprites());
+                pokemonData.getGender(), pokemonData.isShiny(), pokemonData.getId(), pokemonData.getMoves(), pokemonData.getItem(), pokemonData.getStats());
         pokemons.add(pokemon);
         teamRepository.save(team.get(0));
         return ResponseEntity.status(HttpStatus.CREATED).body("Pokemon added");
