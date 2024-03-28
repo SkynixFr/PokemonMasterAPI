@@ -41,17 +41,21 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(Authentication authentication) {
+    public ResponseEntity<Object> login(@RequestBody User userRequest) {
+        if (userRequest.getUsername() == null || userRequest.getPassword() == null) {
 
-        if (authentication == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid credentials");
         }
-        User user = userRepository.findByUsername(authentication.getName()).orElse(null);
-        if (userRepository.findByUsername(authentication.getName()).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        if (userRepository.findByUsername(userRequest.getUsername()).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
+        if (!new BCryptPasswordEncoder().matches(userRequest.getPassword(), userRepository.findByUsername(userRequest.getUsername()).get().getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Password is incorrect");
+        }
+        User userFound = userRepository.findByUsername(userRequest.getUsername()).get();
 
-        return ResponseEntity.status(HttpStatus.OK).body("access Token :" + jwtService.generateToken(authentication,user));
+        return ResponseEntity.status(HttpStatus.OK).body("Access Token : " + "\"" + jwtService.generateToken(userFound) + "\"");
     }
+
 
 }

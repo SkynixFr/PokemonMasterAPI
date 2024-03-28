@@ -1,5 +1,7 @@
 package org.example.pokemonmasterapi.config;
 
+
+
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import org.example.pokemonmasterapi.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +42,11 @@ public class SpringSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(authorize ->
                         authorize
-                                .requestMatchers("user/**").permitAll()
-                                .anyRequest().authenticated()
-                                )
+                                .requestMatchers("user/register").permitAll()
+                                .requestMatchers("user/login").permitAll()
+
+                )
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
-                // This is for the basic authentication
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }

@@ -25,15 +25,14 @@ public class JWTService {
         this.jwtEncoder = jwtEncoder;
     }
 
-    public String generateToken(Authentication authentication, User user) {
+    public String generateToken( User user) {
         Instant now = Instant.now();
-        System.out.println(authentication.getPrincipal());
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
-                .claim("username", authentication.getName())
+                .claim("username", user.getUsername())
                 .claim("email", user.getEmail())
                 .claim("id", user.getId())
                 .claim("password", user.getPassword())
