@@ -36,7 +36,6 @@ public class UserTest {
                 .contentType(MediaType.APPLICATION_JSON));
         // Then
         response.andExpect(status().isCreated());
-        response.andExpect(content().string("User created"));
 
     }
 
@@ -148,5 +147,53 @@ public class UserTest {
         // Then
         response.andExpect(status().isUnauthorized());
         response.andExpect(content().string("Password is incorrect"));
+    }
+
+    @Test
+    public void deleteUserReturnOkStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var accessToken = login.andReturn().getResponse().getContentAsString();
+        var id = userRepository.findByUsername("Ricky").get().getId();
+        // When
+        var response = mockMvc.perform(delete("/user/delete/" + id)
+                .header("Authorization", accessToken));
+        // Then
+        response.andExpect(status().isOk());
+        // Check if the user is deleted
+        assert userRepository.findByUsername("Ricky").isEmpty();
+    }
+
+    @Test
+    public void deleteUserReturnNotFoundStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var accessToken = login.andReturn().getResponse().getContentAsString();
+        var id = userRepository.findByUsername("Ricky").get().getId();
+        userRepository.deleteById(user.getId());
+        // When
+        var response = mockMvc.perform(delete("/user/delete/123")
+                .header("Authorization", accessToken));
+        // Then
+        response.andExpect(status().isNotFound());
+        response.andExpect(content().string("User not found"));
     }
 }

@@ -1,11 +1,13 @@
 package org.example.pokemonmasterapi.controllers;
 
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.example.pokemonmasterapi.config.JWTService;
 import org.example.pokemonmasterapi.model.User;
 import org.example.pokemonmasterapi.repositories.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,8 +36,8 @@ public class UserController {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         // Hash the password before saving it to the database
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body("User created");
+        User userSaved=userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userSaved);
     }
 
 
@@ -60,6 +62,17 @@ public class UserController {
         User userFound = userRepository.findByUsername(userRequest.getUsername()).get();
         return ResponseEntity.status(HttpStatus.OK).body("accessToken : " + "\"" + jwtService.generateToken(userFound) + "\"");
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Object> delete(@PathVariable String id) {
+
+        if (userRepository.findById(id).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        userRepository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).body("User deleted");
+    }
+
 
 
 }
