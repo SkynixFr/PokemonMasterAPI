@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -19,7 +20,8 @@ public class UserTest {
     private MockMvc mockMvc;
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder ;
     @AfterEach
     public void tearDown() {
         userRepository.deleteAll();
@@ -83,5 +85,68 @@ public class UserTest {
         // Then
         response.andExpect(status().isConflict());
         response.andExpect(content().string("Email already exists"));
+    }
+
+    @Test
+    public void loginUserReturnOkStatusAndAccessToken() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+
+          user.setPassword(passwordEncoder.encode("Pikachu"));
+
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        // When
+        var response = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isOk());
+    }
+
+    @Test
+    public void loginUserReturnBadRequestStatus() throws Exception {
+        // Given
+
+        // When
+        var response = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isBadRequest());
+        response.andExpect(content().string("Invalid credentials"));
+    }
+
+    @Test
+    public void loginUserReturnNotFoundStatus() throws Exception {
+        // Given
+
+        // When
+        var response = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isNotFound());
+        response.andExpect(content().string("User not found"));
+    }
+
+    @Test
+    public void loginUserReturnUnauthorizedStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        // When
+        var response = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu2\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isUnauthorized());
+        response.andExpect(content().string("Password is incorrect"));
     }
 }

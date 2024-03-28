@@ -49,12 +49,16 @@ public class UserController {
         if (userRepository.findByUsername(userRequest.getUsername()).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
+
+        // Check if the password is correct
         if (!new BCryptPasswordEncoder().matches(userRequest.getPassword(), userRepository.findByUsername(userRequest.getUsername()).get().getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Password is incorrect");
         }
-        User userFound = userRepository.findByUsername(userRequest.getUsername()).get();
 
-        return ResponseEntity.status(HttpStatus.OK).body("Access Token : " + "\"" + jwtService.generateToken(userFound) + "\"");
+
+        // Generate a token for the user
+        User userFound = userRepository.findByUsername(userRequest.getUsername()).get();
+        return ResponseEntity.status(HttpStatus.OK).body("accessToken : " + "\"" + jwtService.generateToken(userFound) + "\"");
     }
 
 

@@ -49,8 +49,10 @@ public class SpringSecurityConfig {
         return http.build();
     }
 
+    // That's the in-memory user store
     @Bean
     public UserDetailsService users() {
+
         return username -> userRepository.findByUsername(username)
                 .map(user -> User.builder()
                         .username(user.getUsername())
@@ -61,6 +63,7 @@ public class SpringSecurityConfig {
     }
 
 
+    //Encoder for the password
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
