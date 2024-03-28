@@ -6,6 +6,7 @@ import org.example.pokemonmasterapi.model.User;
 import org.example.pokemonmasterapi.repositories.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,10 +25,10 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing required data. Please provide email, username, and password");
         }
 
-        if (userRepository.findByUsername(user.getUsername()) != null) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
         }
-        if (userRepository.findByEmail(user.getEmail()) != null) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists");
         }
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -37,10 +38,20 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body("User created");
     }
 
+
+
     @PostMapping("/login")
-    public String getToken(Authentication authentication) {
-        String token = jwtService.generateToken(authentication);
-        return token;
+    public ResponseEntity<Object> login(Authentication authentication) {
+
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid credentials");
+        }
+        User user = userRepository.findByUsername(authentication.getName()).orElse(null);
+        if (userRepository.findByUsername(authentication.getName()).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("access Token :" + jwtService.generateToken(authentication,user));
     }
 
 }
