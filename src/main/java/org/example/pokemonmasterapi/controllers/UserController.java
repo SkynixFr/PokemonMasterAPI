@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/user")
@@ -63,14 +66,24 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("accessToken : " + "\"" + jwtService.generateToken(userFound) + "\"");
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable String id) {
-
+        if (id == null || id.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing id");
+        }
         if (userRepository.findById(id).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
         userRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).body("User deleted");
+    }
+    @DeleteMapping("/")
+    public ResponseEntity<Object> deleteWithoutId() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing id");
+    }
+    @PutMapping("/")
+    public ResponseEntity<Object> putWithoutId() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing id");
     }
 
     @GetMapping("/me")
@@ -81,6 +94,38 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
         return ResponseEntity.status(HttpStatus.OK).body(userRepository.findByUsername(username).get());
+    }
+
+    // Update user
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> update(@PathVariable String id,@RequestBody User user) {
+        if (userRepository.findById(id).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing required data. Please provide email or username or password");
+        }
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
+        }
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists");
+        }
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        // Hash the password before saving it to the database
+
+        User userFound = userRepository.findById(id).get();
+        if (user.getUsername() != null){
+            userFound.setUsername(user.getUsername());
+        }
+        if (user.getPassword() != null){
+            userFound.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        if (user.getEmail() != null){
+            userFound.setEmail(user.getEmail());
+        }
+        userFound = userRepository.save(userFound);
+        return ResponseEntity.status(HttpStatus.OK).body(userFound);
     }
 
 

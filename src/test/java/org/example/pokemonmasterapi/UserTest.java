@@ -170,7 +170,7 @@ public class UserTest {
         var accessToken = login.andReturn().getResponse().getContentAsString();
         var id = userRepository.findByUsername("Ricky").get().getId();
         // When
-        var response = mockMvc.perform(delete("/user/delete/" + id)
+        var response = mockMvc.perform(delete("/user/" + id)
                 .header("Authorization", accessToken));
         // Then
         response.andExpect(status().isOk());
@@ -195,7 +195,7 @@ var login = mockMvc.perform(post("/user/login")
         var id = userRepository.findByUsername("Ricky").get().getId();
         userRepository.deleteById(user.getId());
         // When
-        var response = mockMvc.perform(delete("/user/delete/123")
+        var response = mockMvc.perform(delete("/user/123")
                 .header("Authorization", accessToken));
         // Then
         response.andExpect(status().isNotFound());
@@ -217,10 +217,32 @@ var login = mockMvc.perform(post("/user/login")
                 .contentType(MediaType.APPLICATION_JSON));
         var accessToken = login.andReturn().getResponse().getContentAsString();
         // When
-        var response = mockMvc.perform(delete("/user/delete/" + user.getId())
+        var response = mockMvc.perform(delete("/user/" + user.getId())
                 .header("Authorization", "Bearer " + accessToken));
         // Then
         response.andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void deleteUserReturnBadRequestStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+
+        user.setEmail("iLovePikachu");
+        userRepository.save(user);
+        var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var Body = login.andReturn().getResponse().getContentAsString();
+        var accessToken = Body.substring(15, Body.length() - 1);
+        // When
+        var response = mockMvc.perform(delete("/user/")
+                .header("Authorization", "Bearer " + accessToken));
+        // Then
+        response.andExpect(status().isBadRequest());
     }
 
     @Test
@@ -296,5 +318,143 @@ var login = mockMvc.perform(post("/user/login")
                 .header("Authorization", "Bearer " + accessToken + "2"));
         // Then
         response.andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void putWithoutIdReturnBadRequestStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var Body = login.andReturn().getResponse().getContentAsString();
+        var accessToken = Body.substring(15, Body.length() - 1);
+        // When
+        var response = mockMvc.perform(put("/user/")
+                .header("Authorization", "Bearer " + accessToken));
+        // Then
+        response.andExpect(status().isBadRequest());
+        response.andExpect(content().string("Missing id"));
+    }
+
+    @Test
+    public void UpdateUserReturnOkStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var Body = login.andReturn().getResponse().getContentAsString();
+        var accessToken = Body.substring(15, Body.length() - 1);
+        // When
+        var response = mockMvc.perform(put("/user/" + user.getId())
+                .header("Authorization", "Bearer " + accessToken)
+                .content("{\"username\": \"Ricky2\",\"password\": \"Pikachu\",\"email\": \"IlovePichu@gmail.com\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isOk());
+        response.andExpect(content().string(containsString("Ricky2")));
+        response.andExpect(content().string(containsString("IlovePichu@gmail.com")));
+        assert userRepository.findByUsername("Ricky2").isPresent();
+    }
+
+    @Test
+    public void UpdateUserReturnNotFoundStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var Body = login.andReturn().getResponse().getContentAsString();
+        var accessToken = Body.substring(15, Body.length() - 1);
+        userRepository.deleteById(user.getId());
+        // When
+        var response = mockMvc.perform(put("/user/" + user.getId())
+                .header("Authorization", "Bearer " + accessToken)
+                .content("{\"username\": \"Ricky2\",\"password\": \"Pikachu\",\"email\": \"IlovePichu@gmail.com\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isNotFound());
+        response.andExpect(content().string("User not found"));
+    }
+
+    @Test
+    public void UpdateUsernameReturnConflictStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var Body = login.andReturn().getResponse().getContentAsString();
+        var accessToken = Body.substring(15, Body.length() - 1);
+        // When
+        var response = mockMvc.perform(put("/user/" + user.getId())
+                .header("Authorization", "Bearer " + accessToken)
+                .content("{\"username\": \"Ricky\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isConflict());
+        response.andExpect(content().string("Username already exists"));
+    }
+
+    @Test
+    public void UpdateEmailReturnConflictStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var Body = login.andReturn().getResponse().getContentAsString();
+        var accessToken = Body.substring(15, Body.length() - 1);
+        // When
+        var response = mockMvc.perform(put("/user/" + user.getId())
+                .header("Authorization", "Bearer " + accessToken)
+                .content("{\"email\": \"IlovePikachu@gmail.com\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isConflict());
+        response.andExpect(content().string("Email already exists"));
+    }
+
+    @Test
+    public void UpdatePasswordReturnOkStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var Body = login.andReturn().getResponse().getContentAsString();
+        var accessToken = Body.substring(15, Body.length() - 1);
+        // When
+        var response = mockMvc.perform(put("/user/" + user.getId())
+                .header("Authorization", "Bearer " + accessToken)
+                .content("{\"password\": \"Pikachu2\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isOk());
     }
 }
