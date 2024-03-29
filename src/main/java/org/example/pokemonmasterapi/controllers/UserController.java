@@ -63,7 +63,10 @@ public class UserController {
 
         // Generate a token for the user
         User userFound = userRepository.findByUsername(userRequest.getUsername()).get();
-        return ResponseEntity.status(HttpStatus.OK).body("accessToken : " + "\"" + jwtService.generateToken(userFound) + "\"");
+        return ResponseEntity.status(HttpStatus.OK).body(new Object() {
+            public final String accessToken = jwtService.generateToken(userFound);
+            public final String refreshToken = jwtService.generateRefreshToken(userFound);
+        });
     }
 
     @DeleteMapping("/{id}")

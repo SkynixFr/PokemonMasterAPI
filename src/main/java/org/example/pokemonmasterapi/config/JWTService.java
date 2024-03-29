@@ -31,7 +31,24 @@ public class JWTService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
+                // Token expires in 1 hour
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
+                .claim("username", user.getUsername())
+                .claim("email", user.getEmail())
+                .claim("id", user.getId())
+                .claim("password", user.getPassword())
+                .build();
+        JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);
+        return this.jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
+    }
+
+    public String generateRefreshToken(User user) {
+        Instant now = Instant.now();
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(now.plus(1, ChronoUnit.DAYS))
                 .claim("username", user.getUsername())
                 .claim("email", user.getEmail())
                 .claim("id", user.getId())

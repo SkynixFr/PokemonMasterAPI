@@ -237,7 +237,7 @@ var login = mockMvc.perform(post("/user/login")
                 .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
                 .contentType(MediaType.APPLICATION_JSON));
         var Body = login.andReturn().getResponse().getContentAsString();
-        var accessToken = Body.substring(15, Body.length() - 1);
+        var accessToken = JsonPath.parse(Body).read("$.accessToken");
         // When
         var response = mockMvc.perform(delete("/user/")
                 .header("Authorization", "Bearer " + accessToken));
@@ -259,8 +259,7 @@ var login = mockMvc.perform(post("/user/login")
                 .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
                 .contentType(MediaType.APPLICATION_JSON));
         var Body = login.andReturn().getResponse().getContentAsString();
-        // Extract the access token from the response
-        var accessToken = Body.substring(15, Body.length() - 1);
+        var accessToken = JsonPath.parse(Body).read("$.accessToken");
 
 
         // When
@@ -287,7 +286,7 @@ var login = mockMvc.perform(post("/user/login")
                 .contentType(MediaType.APPLICATION_JSON));
         var Body = login.andReturn().getResponse().getContentAsString();
         // Extract the access token from the response
-        var accessToken = Body.substring(15, Body.length() - 1);
+        String accessToken = JsonPath.parse(Body).read("$.accessToken");
         userRepository.deleteById(user.getId());
         // When
         var response = mockMvc.perform(get("/user/me")
@@ -332,7 +331,7 @@ var login = mockMvc.perform(post("/user/login")
                 .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
                 .contentType(MediaType.APPLICATION_JSON));
         var Body = login.andReturn().getResponse().getContentAsString();
-        var accessToken = Body.substring(15, Body.length() - 1);
+        var accessToken = JsonPath.parse(Body).read("$.accessToken");
         // When
         var response = mockMvc.perform(put("/user/")
                 .header("Authorization", "Bearer " + accessToken));
@@ -353,7 +352,7 @@ var login = mockMvc.perform(post("/user/login")
                 .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
                 .contentType(MediaType.APPLICATION_JSON));
         var Body = login.andReturn().getResponse().getContentAsString();
-        var accessToken = Body.substring(15, Body.length() - 1);
+        var accessToken = JsonPath.parse(Body).read("$.accessToken");
         // When
         var response = mockMvc.perform(put("/user/" + user.getId())
                 .header("Authorization", "Bearer " + accessToken)
@@ -378,7 +377,7 @@ var login = mockMvc.perform(post("/user/login")
                 .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
                 .contentType(MediaType.APPLICATION_JSON));
         var Body = login.andReturn().getResponse().getContentAsString();
-        var accessToken = Body.substring(15, Body.length() - 1);
+        var accessToken = JsonPath.parse(Body).read("$.accessToken");
         userRepository.deleteById(user.getId());
         // When
         var response = mockMvc.perform(put("/user/" + user.getId())
@@ -402,7 +401,7 @@ var login = mockMvc.perform(post("/user/login")
                 .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
                 .contentType(MediaType.APPLICATION_JSON));
         var Body = login.andReturn().getResponse().getContentAsString();
-        var accessToken = Body.substring(15, Body.length() - 1);
+        var accessToken = JsonPath.parse(Body).read("$.accessToken");
         // When
         var response = mockMvc.perform(put("/user/" + user.getId())
                 .header("Authorization", "Bearer " + accessToken)
@@ -425,7 +424,7 @@ var login = mockMvc.perform(post("/user/login")
                 .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
                 .contentType(MediaType.APPLICATION_JSON));
         var Body = login.andReturn().getResponse().getContentAsString();
-        var accessToken = Body.substring(15, Body.length() - 1);
+        var accessToken = JsonPath.parse(Body).read("$.accessToken");
         // When
         var response = mockMvc.perform(put("/user/" + user.getId())
                 .header("Authorization", "Bearer " + accessToken)
@@ -448,7 +447,7 @@ var login = mockMvc.perform(post("/user/login")
                 .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
                 .contentType(MediaType.APPLICATION_JSON));
         var Body = login.andReturn().getResponse().getContentAsString();
-        var accessToken = Body.substring(15, Body.length() - 1);
+        var accessToken = JsonPath.parse(Body).read("$.accessToken");
         // When
         var response = mockMvc.perform(put("/user/" + user.getId())
                 .header("Authorization", "Bearer " + accessToken)
