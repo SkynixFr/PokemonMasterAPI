@@ -73,6 +73,16 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("User deleted");
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<Object> me(Authentication authentication) {
+        JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
+        String username = jwtAuthenticationToken.getToken().getClaim("username");
+        if(userRepository.findByUsername(username).isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(userRepository.findByUsername(username).get());
+    }
+
 
 
 }

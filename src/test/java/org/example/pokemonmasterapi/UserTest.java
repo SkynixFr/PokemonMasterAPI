@@ -1,5 +1,6 @@
 package org.example.pokemonmasterapi;
 
+import com.jayway.jsonpath.JsonPath;
 import org.example.pokemonmasterapi.model.User;
 import org.example.pokemonmasterapi.repositories.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -10,6 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.*;
+import org.springframework.test.web.servlet.ResultMatcher;
+
+import static net.bytebuddy.matcher.ElementMatchers.is;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -195,5 +200,101 @@ var login = mockMvc.perform(post("/user/login")
         // Then
         response.andExpect(status().isNotFound());
         response.andExpect(content().string("User not found"));
+    }
+
+    @Test
+    public void deleteUserReturnUnauthorizedStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+
+        user.setEmail("iLovePikachu");
+        userRepository.save(user);
+        var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var accessToken = login.andReturn().getResponse().getContentAsString();
+        // When
+        var response = mockMvc.perform(delete("/user/delete/" + user.getId())
+                .header("Authorization", "Bearer " + accessToken));
+        // Then
+        response.andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void meReturnOkStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var Body = login.andReturn().getResponse().getContentAsString();
+        // Extract the access token from the response
+        var accessToken = Body.substring(15, Body.length() - 1);
+
+
+        // When
+        var response = mockMvc.perform(get("/user/me")
+                .header("Authorization", "Bearer " + accessToken));
+        // Then
+        response.andExpect(status().isOk());
+        response.andExpect(content().string(containsString("Ricky")));
+        response.andExpect(content().string(containsString("IlovePikachu@gmail.com")));
+    }
+
+    @Test
+    public void meReturnNotFoundStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var Body = login.andReturn().getResponse().getContentAsString();
+        // Extract the access token from the response
+        var accessToken = Body.substring(15, Body.length() - 1);
+        userRepository.deleteById(user.getId());
+        // When
+        var response = mockMvc.perform(get("/user/me")
+                .header("Authorization", "Bearer " + accessToken));
+        // Then
+        response.andExpect(status().isNotFound());
+        response.andExpect(content().string("User not found"));
+    }
+
+    @Test
+    public void meReturnUnauthorizedStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var Body = login.andReturn().getResponse().getContentAsString();
+        // Extract the access token from the response
+        var accessToken = Body.substring(15, Body.length() - 1);
+        // When
+        var response = mockMvc.perform(get("/user/me")
+                .header("Authorization", "Bearer " + accessToken + "2"));
+        // Then
+        response.andExpect(status().isUnauthorized());
     }
 }
