@@ -456,4 +456,63 @@ var login = mockMvc.perform(post("/user/login")
         // Then
         response.andExpect(status().isOk());
     }
+
+    @Test
+    public void GetRefreshTokenReturnOkStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var Body = login.andReturn().getResponse().getContentAsString();
+        var refreshToken = JsonPath.parse(Body).read("$.refreshToken");
+        // When
+        var response = mockMvc.perform(get("/user/refreshToken")
+                .header("Authorization", "Bearer " + refreshToken));
+        // Then
+        response.andExpect(status().isOk());
+        response.andExpect(content().string(containsString("accessToken")));
+    }
+
+    @Test
+    public void GetRefreshTokenReturnUnauthorizedStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        // When
+        var refreshToken = "eyJhbG";
+        var response = mockMvc.perform(get("/user/refreshToken")
+                .header("Authorization", "Bearer " + refreshToken));
+        // Then
+        response.andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void GetRefreshTokenReturnNotFoundStatus() throws Exception {
+        // Given
+        User user = new User();
+        user.setUsername("Ricky");
+        user.setPassword(passwordEncoder.encode("Pikachu"));
+        user.setEmail("IlovePikachu@gmail.com");
+        userRepository.save(user);
+        var login = mockMvc.perform(post("/user/login")
+                .content("{\"username\": \"Ricky\",\"password\": \"Pikachu\"}")
+                .contentType(MediaType.APPLICATION_JSON));
+        var Body = login.andReturn().getResponse().getContentAsString();
+        var refreshToken = JsonPath.parse(Body).read("$.refreshToken");
+        userRepository.deleteById(user.getId());
+        // When
+        var response = mockMvc.perform(get("/user/refreshToken")
+                .header("Authorization", "Bearer " + refreshToken));
+        // Then
+        response.andExpect(status().isNotFound());
+        response.andExpect(content().string("User not found"));
+    }
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.Objects;
 
 @RestController
@@ -129,6 +130,26 @@ public class UserController {
         }
         userFound = userRepository.save(userFound);
         return ResponseEntity.status(HttpStatus.OK).body(userFound);
+    }
+
+    @GetMapping("/refreshToken")
+    public ResponseEntity<Object> refreshToken(Authentication authentication) {
+        JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
+        String username = jwtAuthenticationToken.getToken().getClaim("username");
+        if(userRepository.findByUsername(username).isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        //Verify if the expiration date is valid
+        Instant expirationDate = jwtAuthenticationToken.getToken().getExpiresAt();
+        Instant now = Instant.now();
+        if (now.isAfter(expirationDate)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token expired");
+        }
+
+        User userFound = userRepository.findByUsername(username).get();
+        return ResponseEntity.status(HttpStatus.OK).body(new Object() {
+            public final String accessToken = jwtService.generateToken(userFound);
+        });
     }
 
 
