@@ -31,8 +31,9 @@ class TeamTest {
         // Given
 
         // When
+        var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
         var response = mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
+                .content("{\"name\": \"Team Red\",\"avatar\": " + avatar + "}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
@@ -45,9 +46,11 @@ class TeamTest {
         // Given
 
         // When
+        var avatar = "{\"name\": \"\",\"location\": \"\",\"url\": \"\"}";
         var response = mockMvc.perform(post("/teams")
-                .content("{\"name\": \"\",\"avatar\": \"\"}")
+                .content("{\"name\": \"Team Red\",\"avatar\": " + avatar + "}")
                 .contentType(MediaType.APPLICATION_JSON));
+
 
         // Then
         response.andExpect(status().isBadRequest());
@@ -57,13 +60,15 @@ class TeamTest {
     @Test
     public void addTeamReturnConflictStatus() throws Exception {
         // Given
+        var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
         mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
+                .content("{\"name\": \"Team Red\",\"avatar\": " + avatar + "}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When
+        var avatar2 = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
         var response = mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
+                .content("{\"name\": \"Team Red\",\"avatar\": " + avatar2 + "}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
@@ -75,11 +80,13 @@ class TeamTest {
     @Test
     public void returnAllTeamsOkStatus() throws Exception {
         // Given
+        var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
         mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
+                .content("{\"name\": \"Team Red\",\"avatar\": " + avatar + "}")
                 .contentType(MediaType.APPLICATION_JSON));
+        var avatar2 = "{\"name\": \"Cynthia\",\"location\": \"Sinnoh\",\"url\": \"~/public/images/compressed/avatars/sinnoh/cynthia.png\"}";
         mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Aqua\",\"avatar\": \"~/public/images/avatars/TeamAqua.png\"}")
+                .content("{\"name\": \"Team Cynthia\",\"avatar\": " + avatar2 + "}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When
@@ -88,22 +95,23 @@ class TeamTest {
         // Then
         response.andExpect(status().isOk());
         assertThat(teamRepository.findAll()).hasSize(2);
-        assertThat(response.andReturn().getResponse().getContentAsString()).contains("Team Rocket", "Team Aqua");
+        assertThat(response.andReturn().getResponse().getContentAsString()).contains("Team Red", "Team Cynthia");
     }
 
     @Test
     public void returnOneTeamOkStatus() throws  Exception {
         // Given
+        var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
         mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
+                .content("{\"name\": \"Team Red\",\"avatar\": " + avatar + "}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When
-        var response = mockMvc.perform(get("/teams/Team Rocket"));
+        var response = mockMvc.perform(get("/teams/Team Red"));
 
         // Then
         response.andExpect(status().isOk());
-        assertThat(response.andReturn().getResponse().getContentAsString()).contains("Team Rocket");
+        assertThat(response.andReturn().getResponse().getContentAsString()).contains("Team Red");
     }
 
     @Test
@@ -121,12 +129,13 @@ class TeamTest {
     @Test
     public void deleteTeamOkStatus() throws  Exception {
         // Given
+        var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
         mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
+                .content("{\"name\": \"Team Red\",\"avatar\": " + avatar + "}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When
-        var response = mockMvc.perform(delete("/teams/Team Rocket"));
+        var response = mockMvc.perform(delete("/teams/Team Red"));
 
         // Then
         response.andExpect(status().isOk());
@@ -138,7 +147,7 @@ class TeamTest {
         // Given
 
         // When
-        var response = mockMvc.perform(delete("/teams/Team Rocket"));
+        var response = mockMvc.perform(delete("/teams/Team Red"));
 
         // Then
         response.andExpect(status().isNotFound());
@@ -148,8 +157,9 @@ class TeamTest {
     @Test
     public void addPokemonReturnCreatedStatus() throws Exception {
         // Given
+        var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
         mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
+                .content("{\"name\": \"Team Red\",\"avatar\": " + avatar + "}")
                 .contentType(MediaType.APPLICATION_JSON));
         var Moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
         var type = "[{\"name\": \"Electric\"}]";
@@ -158,7 +168,7 @@ class TeamTest {
         var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
         var pokemon = "{\"name\": \"Pikachu\",\"type\": " + type + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + Moves + ",\"item\": " + Item + ",\"stats\": " + Stats + "}";
         // When
-        var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
+        var response = mockMvc.perform(post("/teams/Team Red/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
 
         // Then
         response.andExpect(status().isCreated());
@@ -192,14 +202,15 @@ class TeamTest {
         var Stats = "{\"hp\": 35,\"attack\": 55,\"defense\": 40,\"spAttack\": 50,\"spDefense\": 50,\"speed\": 90,\"iv\": 0,\"ev\": 0}";
         var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
         var pokemon = "{\"name\": \"Pikachu\",\"type\": " + type + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + Moves + ",\"item\": " + Item + ",\"stats\": " + Stats + "}";
+        var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
         mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Rocket\",\"avatar\": \"~/public/images/avatars/TeamRocket.png\"}")
+                .content("{\"name\": \"Team Red\",\"avatar\": " + avatar + "}")
                 .contentType(MediaType.APPLICATION_JSON));
-        mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
+        mockMvc.perform(post("/teams/Team Red/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
 
         // When
 
-        var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
+        var response = mockMvc.perform(post("/teams/Team Red/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
 
         // Then
         response.andExpect(status().isConflict());
