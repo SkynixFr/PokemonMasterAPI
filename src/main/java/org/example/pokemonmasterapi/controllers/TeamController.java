@@ -63,7 +63,7 @@ public class TeamController {
         if (pokemons.stream().anyMatch(pokemon -> pokemon.getName().equals(pokemonName))) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Pokemon already exists");
         }
-        var pokemon = new Pokemon(pokemonName, pokemonData.getType(), pokemonData.getLevel(), pokemonData.getAbility(), pokemonData.getNature(),
+        var pokemon = new Pokemon(pokemonName, pokemonData.getTypes(), pokemonData.getLevel(), pokemonData.getAbility(), pokemonData.getNature(),
                 pokemonData.getGender(), pokemonData.isShiny(), pokemonData.getId(), pokemonData.getMoves(), pokemonData.getItem(), pokemonData.getStats());
         pokemons.add(pokemon);
         teamRepository.save(team.get(0));

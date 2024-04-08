@@ -161,12 +161,12 @@ class TeamTest {
         mockMvc.perform(post("/teams")
                 .content("{\"name\": \"Team Red\",\"avatar\": " + avatar + "}")
                 .contentType(MediaType.APPLICATION_JSON));
-        var Moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
-        var type = "[{\"name\": \"Electric\"}]";
-        var Item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
-        var Stats = "{\"hp\": 35,\"attack\": 55,\"defense\": 40,\"spAttack\": 50,\"spDefense\": 50,\"speed\": 90,\"iv\": 0,\"ev\": 0}";
+        var moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
+        var types = "[{\"name\": \"Electric\"}]";
+        var item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
+        var stats = "[{\"name\": \"hp\",\"value\": 35,\"max\": 35},{\"name\": \"Attack\",\"value\": 55,\"max\": 55},{\"name\": \"Defense\",\"value\": 40,\"max\": 40},{\"name\": \"Sp. Attack\",\"value\": 50,\"max\": 50},{\"name\": \"Sp. Defense\",\"value\": 50,\"max\": 50},{\"name\": \"Speed\",\"value\": 90,\"max\": 90}]";
         var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
-        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + type + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + Moves + ",\"item\": " + Item + ",\"stats\": " + Stats + "}";
+        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "}";
         // When
         var response = mockMvc.perform(post("/teams/Team Red/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
 
@@ -180,12 +180,12 @@ class TeamTest {
         // Given
 
         // When
-        var Moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
-        var type = "[{\"name\": \"Electric\"}]";
-        var Item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
-        var Stats = "{\"hp\": 35,\"attack\": 55,\"defense\": 40,\"spAttack\": 50,\"spDefense\": 50,\"speed\": 90,\"iv\": 0,\"ev\": 0}";
+        var moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
+        var types = "[{\"name\": \"Electric\"}]";
+        var item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
+        var stats = "[{\"name\": \"hp\",\"value\": 35,\"max\": 35},{\"name\": \"Attack\",\"value\": 55,\"max\": 55},{\"name\": \"Defense\",\"value\": 40,\"max\": 40},{\"name\": \"Sp. Attack\",\"value\": 50,\"max\": 50},{\"name\": \"Sp. Defense\",\"value\": 50,\"max\": 50},{\"name\": \"Speed\",\"value\": 90,\"max\": 90}]";
         var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
-        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + type + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + Moves + ",\"item\": " + Item + ",\"stats\": " + Stats + "}";
+        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "}";
         var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
 
         // Then
@@ -196,12 +196,12 @@ class TeamTest {
     @Test
     public void addPokemonReturnConflictStatus() throws Exception {
         // Given
-        var Moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
+        var moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
         var type = "[{\"name\": \"Electric\"}]";
-        var Item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
-        var Stats = "{\"hp\": 35,\"attack\": 55,\"defense\": 40,\"spAttack\": 50,\"spDefense\": 50,\"speed\": 90,\"iv\": 0,\"ev\": 0}";
+        var item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
+        var stats = "[{\"name\": \"hp\",\"value\": 35,\"max\": 35},{\"name\": \"Attack\",\"value\": 55,\"max\": 55},{\"name\": \"Defense\",\"value\": 40,\"max\": 40},{\"name\": \"Sp. Attack\",\"value\": 50,\"max\": 50},{\"name\": \"Sp. Defense\",\"value\": 50,\"max\": 50},{\"name\": \"Speed\",\"value\": 90,\"max\": 90}]";
         var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
-        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + type + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + Moves + ",\"item\": " + Item + ",\"stats\": " + Stats + "}";
+        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + type + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "}";
         var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
         mockMvc.perform(post("/teams")
                 .content("{\"name\": \"Team Red\",\"avatar\": " + avatar + "}")

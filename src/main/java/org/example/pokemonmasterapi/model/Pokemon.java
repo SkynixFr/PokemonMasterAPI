@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Pokemon {
     private String name;
-    private Type[] type;
+    private Type[] types;
     private int level;
     private Ability ability;
     private String nature;
@@ -18,5 +18,5 @@ public class Pokemon {
     private int id;
     private Move[] moves;
     private Item item;
-    private Stats stats;
+    private Stat[] stats;
 }

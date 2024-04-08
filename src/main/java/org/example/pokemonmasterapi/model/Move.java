@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-
+@NoArgsConstructor
 @AllArgsConstructor
 public class Move {
     private String name;

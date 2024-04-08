@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
+public class Stat {
     private String name;
-    private String description;
-    private String image;
+    private int value;
+    private int max;
 }
