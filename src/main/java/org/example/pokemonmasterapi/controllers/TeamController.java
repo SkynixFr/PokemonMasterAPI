@@ -5,6 +5,7 @@ import org.example.pokemonmasterapi.model.Team;
 import org.example.pokemonmasterapi.model.Pokemon;
 import org.example.pokemonmasterapi.repositories.TeamRepository;
 import org.springframework.http.*;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,12 +16,12 @@ public class TeamController {
     private final TeamRepository teamRepository;
 
     @PostMapping
-    public ResponseEntity<Object> addTeam(@RequestBody Team team) {
+    public ResponseEntity<Object> addTeam(@RequestBody @Validated Team team) {
         if (team.getName() == null || team.getAvatar() == null || team.getName().isEmpty() || team.getAvatar().getName().isEmpty() || team.getAvatar().getUrl().isEmpty() || team.getAvatar().getLocation().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing name or avatar");
         }
 
-        if (!teamRepository.findByName(team.getName()).isEmpty()) {
+        if (!) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Team already exists");
         }
 
@@ -52,21 +53,19 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.OK).body("Team deleted");
     }
 
-    @PostMapping("/{name}/pokemons/{pokemonName}")
-    public ResponseEntity<Object> addPokemon(@PathVariable String name, @PathVariable String pokemonName, @RequestBody Pokemon pokemonData) {
-        var team = teamRepository.findByName(name);
-        if (team.isEmpty()) {
+    @PutMapping("/{id}/pokemons/")
+    public ResponseEntity<Object> saveTeam(@PathVariable String id, @RequestBody Team team) {
+        var teamBdd = teamRepository.findByName(name);
+        if (teamBdd.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Team not found");
         }
 
-        var pokemons = team.get(0).getPokemons();
-        if (pokemons.stream().anyMatch(pokemon -> pokemon.getName().equals(pokemonName))) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Pokemon already exists");
+        if (teamBdd.get(0).getPokemons().size() + team.getPokemons().size() > 6) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Team can't have more than 6 pokemons");
         }
-        var pokemon = new Pokemon(pokemonName, pokemonData.getTypes(), pokemonData.getLevel(), pokemonData.getAbility(), pokemonData.getNature(),
-                pokemonData.getGender(), pokemonData.isShiny(), pokemonData.getId(), pokemonData.getMoves(), pokemonData.getItem(), pokemonData.getStats());
-        pokemons.add(pokemon);
-        teamRepository.save(team.get(0));
-        return ResponseEntity.status(HttpStatus.CREATED).body("Pokemon added");
+
+        teamRepository.save(team);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Team saved");
     }
 }

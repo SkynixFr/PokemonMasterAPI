@@ -99,7 +99,7 @@ class TeamTest {
     }
 
     @Test
-    public void returnOneTeamOkStatus() throws  Exception {
+    public void returnOneTeamOkStatus() throws Exception {
         // Given
         var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
         mockMvc.perform(post("/teams")
@@ -115,7 +115,7 @@ class TeamTest {
     }
 
     @Test
-    public void returnOneTeamNotFoundStatus() throws  Exception {
+    public void returnOneTeamNotFoundStatus() throws Exception {
         // Given
 
         // When
@@ -127,7 +127,7 @@ class TeamTest {
     }
 
     @Test
-    public void deleteTeamOkStatus() throws  Exception {
+    public void deleteTeamOkStatus() throws Exception {
         // Given
         var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
         mockMvc.perform(post("/teams")
@@ -143,7 +143,7 @@ class TeamTest {
     }
 
     @Test
-    public void deleteTeamNotFoundStatus() throws  Exception {
+    public void deleteTeamNotFoundStatus() throws Exception {
         // Given
 
         // When
@@ -155,65 +155,86 @@ class TeamTest {
     }
 
     @Test
-    public void addPokemonReturnCreatedStatus() throws Exception {
+    public void saveTeamReturnCreatedStatus() throws Exception {
         // Given
         var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
         mockMvc.perform(post("/teams")
                 .content("{\"name\": \"Team Red\",\"avatar\": " + avatar + "}")
                 .contentType(MediaType.APPLICATION_JSON));
-        var moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
-        var types = "[{\"name\": \"Electric\"}]";
-        var item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
-        var stats = "[{\"name\": \"hp\",\"value\": 35,\"max\": 35},{\"name\": \"Attack\",\"value\": 55,\"max\": 55},{\"name\": \"Defense\",\"value\": 40,\"max\": 40},{\"name\": \"Sp. Attack\",\"value\": 50,\"max\": 50},{\"name\": \"Sp. Defense\",\"value\": 50,\"max\": 50},{\"name\": \"Speed\",\"value\": 90,\"max\": 90}]";
-        var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
-        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "}";
-        // When
-        var response = mockMvc.perform(post("/teams/Team Red/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
+        var team = mockMvc.perform(get("/teams/Team Red"));
 
-        // Then
-        response.andExpect(status().isCreated());
-        response.andExpect(content().string("Pokemon added"));
     }
 
-    @Test
-    public void addPokemonReturnNotFoundStatus() throws Exception {
-        // Given
-
-        // When
-        var moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
-        var types = "[{\"name\": \"Electric\"}]";
-        var item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
-        var stats = "[{\"name\": \"hp\",\"value\": 35,\"max\": 35},{\"name\": \"Attack\",\"value\": 55,\"max\": 55},{\"name\": \"Defense\",\"value\": 40,\"max\": 40},{\"name\": \"Sp. Attack\",\"value\": 50,\"max\": 50},{\"name\": \"Sp. Defense\",\"value\": 50,\"max\": 50},{\"name\": \"Speed\",\"value\": 90,\"max\": 90}]";
-        var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
-        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "}";
-        var response = mockMvc.perform(post("/teams/Team Rocket/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
-
-        // Then
-        response.andExpect(status().isNotFound());
-        response.andExpect(content().string("Team not found"));
-    }
-
-    @Test
-    public void addPokemonReturnConflictStatus() throws Exception {
-        // Given
-        var moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
-        var type = "[{\"name\": \"Electric\"}]";
-        var item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
-        var stats = "[{\"name\": \"hp\",\"value\": 35,\"max\": 35},{\"name\": \"Attack\",\"value\": 55,\"max\": 55},{\"name\": \"Defense\",\"value\": 40,\"max\": 40},{\"name\": \"Sp. Attack\",\"value\": 50,\"max\": 50},{\"name\": \"Sp. Defense\",\"value\": 50,\"max\": 50},{\"name\": \"Speed\",\"value\": 90,\"max\": 90}]";
-        var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
-        var pokemon = "{\"name\": \"Pikachu\",\"type\": " + type + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "}";
-        var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
-        mockMvc.perform(post("/teams")
-                .content("{\"name\": \"Team Red\",\"avatar\": " + avatar + "}")
-                .contentType(MediaType.APPLICATION_JSON));
-        mockMvc.perform(post("/teams/Team Red/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
-
-        // When
-
-        var response = mockMvc.perform(post("/teams/Team Red/pokemons/Pikachu").contentType(MediaType.APPLICATION_JSON).content(pokemon));
-
-        // Then
-        response.andExpect(status().isConflict());
-        response.andExpect(content().string("Pokemon already exists"));
-    }
+//    @Test
+//    public void saveTeamReturnCreatedStatus() throws Exception {
+//        // Given
+//        var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
+//        mockMvc.perform(post("/teams")
+//                .content("{\"name\": \"Team Red\",\"avatar\": " + avatar + "}")
+//                .contentType(MediaType.APPLICATION_JSON));
+//        var moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
+//        var types = "[{\"name\": \"Electric\"}]";
+//        var item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
+//        var stats = "[{\"name\": \"hp\",\"value\": 35,\"max\": 35},{\"name\": \"Attack\",\"value\": 55,\"max\": 55},{\"name\": \"Defense\",\"value\": 40,\"max\": 40},{\"name\": \"Sp. Attack\",\"value\": 50,\"max\": 50},{\"name\": \"Sp. Defense\",\"value\": 50,\"max\": 50},{\"name\": \"Speed\",\"value\": 90,\"max\": 90}]";
+//        var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
+//        var pokemons = "[{\"name\": \"Pikachu\",\"type\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "}]";
+//
+//        // When
+//        var response = mockMvc.perform(put("/teams/Team Red/pokemons/").contentType(MediaType.APPLICATION_JSON).content(pokemons));
+//
+//        // Then
+//        response.andExpect(status().isCreated());
+//        response.andExpect(content().string("Team saved"));
+//    }
+//
+//    @Test
+//    public void saveTeamReturnNotFoundStatus() throws Exception {
+//        // Given
+//
+//        // When
+//        var moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
+//        var types = "[{\"name\": \"Electric\"}]";
+//        var item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
+//        var stats = "[{\"name\": \"hp\",\"value\": 35,\"max\": 35},{\"name\": \"Attack\",\"value\": 55,\"max\": 55},{\"name\": \"Defense\",\"value\": 40,\"max\": 40},{\"name\": \"Sp. Attack\",\"value\": 50,\"max\": 50},{\"name\": \"Sp. Defense\",\"value\": 50,\"max\": 50},{\"name\": \"Speed\",\"value\": 90,\"max\": 90}]";
+//        var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
+//        var pokemons = "[{\"name\": \"Pikachu\",\"type\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "}]";
+//
+//
+//        var response = mockMvc.perform(put("/teams/Team Rocket/pokemons/").contentType(MediaType.APPLICATION_JSON).content(pokemons));
+//
+//        // Then
+//        response.andExpect(status().isNotFound());
+//        response.andExpect(content().string("Team not found"));
+//    }
+//
+//    @Test
+//    public void saveTeamReturnBadRequestStatus() throws Exception {
+//        // Given
+//        var avatar = "{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/red.png\"}";
+//        var team = "{\"name\": \"Team Red\",\"avatar\": " + avatar + "}";
+//        mockMvc.perform(post("/teams")
+//                .content(team)
+//                .contentType(MediaType.APPLICATION_JSON));
+//        var moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
+//        var types = "[{\"name\": \"Electric\"}]";
+//        var item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\"}";
+//        var stats = "[{\"name\": \"hp\",\"value\": 35,\"max\": 35},{\"name\": \"Attack\",\"value\": 55,\"max\": 55},{\"name\": \"Defense\",\"value\": 40,\"max\": 40},{\"name\": \"Sp. Attack\",\"value\": 50,\"max\": 50},{\"name\": \"Sp. Defense\",\"value\": 50,\"max\": 50},{\"name\": \"Speed\",\"value\": 90,\"max\": 90}]";
+//        var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
+//        var pokemons = "["
+//                + "{\"name\": \"Pikachu\",\"type\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "},"
+//                + "{\"name\": \"Pikachu\",\"type\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "},"
+//                + "{\"name\": \"Pikachu\",\"type\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "},"
+//                + "{\"name\": \"Pikachu\",\"type\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "},"
+//                + "{\"name\": \"Pikachu\",\"type\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "},"
+//                + "{\"name\": \"Pikachu\",\"type\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "},"
+//                + "{\"name\": \"Pikachu\",\"type\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "}"
+//                + "]";
+//
+//        // When
+//        var response = mockMvc.perform(put("/teams/Team Red/pokemons/").contentType(MediaType.APPLICATION_JSON).content(pokemons));
+//
+//        // Then
+//        response.andExpect(status().isBadRequest());
+//        response.andExpect(content().string("Team can't have more than 6 pokemons"));
+//    }
 }

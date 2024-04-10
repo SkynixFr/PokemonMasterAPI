@@ -1,6 +1,8 @@
 package org.example.pokemonmasterapi.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +20,16 @@ public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
+    @NotEmpty
+    @Size(min = 3, max = 20)
     private String name;
+
+    @NotEmpty
+    @Valid
     private Avatar avatar;
-    private List<Pokemon> pokemons = new ArrayList<>();
+
+    @Size(min = 1, max = 6)
+    @Valid
+    private List<Pokemon> pokemons;
 }
