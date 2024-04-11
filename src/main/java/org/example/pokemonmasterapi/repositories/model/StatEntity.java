@@ -1,4 +1,4 @@
-package org.example.pokemonmasterapi.model;
+package org.example.pokemonmasterapi.repositories.model;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -9,25 +9,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Move {
+public class StatEntity {
     @NotEmpty
     private String name;
 
-    @NotEmpty
-    private String type;
-
-    @NotEmpty
-    private String category;
-
     @Positive
-    private int power;
-
+    private int value;
+    
     @Positive
-    private int accuracy;
-
-    @Positive
-    private int pp;
-
-    @NotEmpty
-    private String description;
+    private int max;
 }

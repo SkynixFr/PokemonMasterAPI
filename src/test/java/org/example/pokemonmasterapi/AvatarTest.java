@@ -6,14 +6,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.http.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class AvatarTest {
+class AvatarTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -30,12 +35,14 @@ public class AvatarTest {
 
         // When
         var response = mockMvc.perform(post("/avatars")
-                .content("{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
+                .content(
+                        "{\"name\": \"Red\",\"region\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
         response.andExpect(status().isCreated());
-        response.andExpect(content().string("Avatar created"));
+        response.andExpect(content().json(
+                "{\"name\":\"Red\",\"region\":\"Kanto\",\"url\":\"~/public/images/compressed/avatars/kanto/Ash.png\"}"));
     }
 
     @Test
@@ -44,36 +51,38 @@ public class AvatarTest {
 
         // When
         var response = mockMvc.perform(post("/avatars")
-                .content("{\"name\": \"\",\"location\": \"\",\"url\": \"\"}")
+                .content("{\"name\":\"\",\"region\": \"\",\"url\": \"\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
         response.andExpect(status().isBadRequest());
-        response.andExpect(content().string("Missing name, location or url"));
     }
 
     @Test
     public void addAvatarReturnConflictStatus() throws Exception {
         // Given
         mockMvc.perform(post("/avatars")
-                .content("{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
+                .content(
+                        "{\"name\": \"Red\",\"region\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When
         var response = mockMvc.perform(post("/avatars")
-                .content("{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
+                .content(
+                        "{\"name\": \"Red\",\"region\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
         response.andExpect(status().isConflict());
-        response.andExpect(content().string("Avatar already exists"));
+        response.andExpect(status().reason("Avatar with name Red already exists"));
     }
 
     @Test
     public void getAvatarsReturnOkStatus() throws Exception {
         // Given
         mockMvc.perform(post("/avatars")
-                .content("{\"name\": \"Red\",\"location\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
+                .content(
+                        "{\"name\": \"Red\",\"region\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When
@@ -81,6 +90,7 @@ public class AvatarTest {
 
         // Then
         response.andExpect(status().isOk());
-        response.andExpect(content().json("[{\"name\":\"Red\",\"location\":\"Kanto\",\"url\":\"~/public/images/compressed/avatars/kanto/Ash.png\"}]"));
+        response.andExpect(content().json(
+                "[{\"name\":\"Red\",\"region\":\"Kanto\",\"url\":\"~/public/images/compressed/avatars/kanto/Ash.png\"}]"));
     }
 }

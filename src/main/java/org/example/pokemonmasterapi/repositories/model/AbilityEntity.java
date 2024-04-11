@@ -1,7 +1,6 @@
-package org.example.pokemonmasterapi.model;
+package org.example.pokemonmasterapi.repositories.model;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,13 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Stat {
+public class AbilityEntity {
     @NotEmpty
     private String name;
 
-    @Positive
-    private int value;
-
-    @Positive
-    private int max;
+    @NotEmpty
+    private String description;
 }

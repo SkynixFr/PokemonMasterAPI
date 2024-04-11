@@ -1,12 +1,18 @@
 package org.example.pokemonmasterapi.controllers;
 
 import lombok.AllArgsConstructor;
-import org.example.pokemonmasterapi.model.Team;
-import org.example.pokemonmasterapi.model.Pokemon;
+import org.example.pokemonmasterapi.controllers.model.TeamCreate;
+import org.example.pokemonmasterapi.controllers.model.TeamResponse;
+import org.example.pokemonmasterapi.controllers.model.TeamUpdate;
+import org.example.pokemonmasterapi.repositories.AvatarRepository;
 import org.example.pokemonmasterapi.repositories.TeamRepository;
-import org.springframework.http.*;
+import org.example.pokemonmasterapi.repositories.model.TeamEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -14,58 +20,70 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000")
 public class TeamController {
     private final TeamRepository teamRepository;
+    private final AvatarRepository avatarRepository;
+
+    public TeamResponse mappingTeamResponse(TeamEntity team) {
+        var avatar = avatarRepository.findById(team.getAvatarId())
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Avatar does not exist"));
+        return new TeamResponse(team.getId(), team.getName(), avatar, team.getPokemons());
+    }
 
     @PostMapping
-    public ResponseEntity<Object> addTeam(@RequestBody @Validated Team team) {
-        if (team.getName() == null || team.getAvatar() == null || team.getName().isEmpty() || team.getAvatar().getName().isEmpty() || team.getAvatar().getUrl().isEmpty() || team.getAvatar().getLocation().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing name or avatar");
+    @ResponseStatus(HttpStatus.CREATED)
+    public TeamResponse addTeam(@RequestBody @Validated TeamCreate team) {
+        if (teamRepository.existsByName(team.getName())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Team with name " + team.getName() + " already exists");
         }
 
-        if (!) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Team already exists");
-        }
+        var avatar = avatarRepository.findById(team.getAvatarId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Avatar does not exist"));
 
-        teamRepository.save(team);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Team created");
+        var teamBDD = teamRepository.save(new TeamEntity(null, team.getName(), avatar.getId(), null));
+
+        return new TeamResponse(teamBDD.getId(), teamBDD.getName(), avatar, teamBDD.getPokemons());
     }
 
     @GetMapping
-    public ResponseEntity<Object> getTeams() {
-        return ResponseEntity.status(HttpStatus.OK).body(teamRepository.findAll());
+    @ResponseStatus(HttpStatus.OK)
+    public List<TeamResponse> getTeams() {
+        var teams = teamRepository.findAll();
+        return teams.stream()
+                .map(this::mappingTeamResponse)
+                .toList();
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<Object> getTeam(@PathVariable String name) {
-        var team = teamRepository.findByName(name);
-        if (team.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Team not found");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(team.get(0));
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public TeamResponse getTeam(@PathVariable String id) {
+
+        var team = teamRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+
+        return this.mappingTeamResponse(team);
     }
 
-    @DeleteMapping("/{name}")
-    public ResponseEntity<Object> deleteTeam(@PathVariable String name) {
-        var team = teamRepository.findByName(name);
-        if (team.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Team not found");
-        }
-        teamRepository.delete(team.get(0));
-        return ResponseEntity.status(HttpStatus.OK).body("Team deleted");
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTeam(@PathVariable String id) {
+        teamRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+        teamRepository.deleteById(id);
     }
 
-    @PutMapping("/{id}/pokemons/")
-    public ResponseEntity<Object> saveTeam(@PathVariable String id, @RequestBody Team team) {
-        var teamBdd = teamRepository.findByName(name);
-        if (teamBdd.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Team not found");
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public TeamResponse saveTeam(@PathVariable String id, @RequestBody @Validated TeamUpdate team) {
+        if (!teamRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found");
         }
 
-        if (teamBdd.get(0).getPokemons().size() + team.getPokemons().size() > 6) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Team can't have more than 6 pokemons");
-        }
+        var avatar = avatarRepository.findById(team.getAvatarId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Avatar does not exist"));
 
-        teamRepository.save(team);
+        var newTeam = teamRepository.save(new TeamEntity(id, team.getName(), avatar.getId(), team.getPokemons()));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("Team saved");
+        return new TeamResponse(newTeam.getId(), newTeam.getName(), avatar, newTeam.getPokemons());
     }
 }

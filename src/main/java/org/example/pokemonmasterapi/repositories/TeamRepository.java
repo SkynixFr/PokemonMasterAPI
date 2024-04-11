@@ -1,10 +1,8 @@
 package org.example.pokemonmasterapi.repositories;
 
-import org.example.pokemonmasterapi.model.Team;
+import org.example.pokemonmasterapi.repositories.model.TeamEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.util.List;
-
-public interface TeamRepository extends MongoRepository<Team, String>{
-
+public interface TeamRepository extends MongoRepository<TeamEntity, String> {
+    boolean existsByName(String teamName);
 }
