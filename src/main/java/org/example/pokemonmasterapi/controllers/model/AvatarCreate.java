@@ -18,5 +18,5 @@ public class AvatarCreate {
     private String region;
 
     @NotEmpty
-    private String url;
+    private String sprite;
 }

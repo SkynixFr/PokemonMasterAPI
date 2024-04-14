@@ -176,17 +176,49 @@ class TeamTest {
                 new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         var teamId = teamRepository.save(new TeamEntity(null, "Team Red", "1", null)).getId();
 
-        var moves = "[{\"name\": \"Thunderbolt\",\"type\": \"Electric\",\"category\": \"Special\",\"power\": 90,\"accuracy\": 100,\"pp\": 15,\"description\": \"A strong electric attack\"}]";
-        var types = "[{\"name\": \"Electric\"}]";
-        var item = "{\"name\": \"Light Ball\",\"description\": \"A strange ball that boosts Pikachu's stats\",\"image\": \"/images/\"}";
-        var stats = "[{\"name\": \"hp\",\"value\": 35,\"max\": 35},{\"name\": \"Attack\",\"value\": 55,\"max\": 55},{\"name\": \"Defense\",\"value\": 40,\"max\": 40},{\"name\": \"Sp. Attack\",\"value\": 50,\"max\": 50},{\"name\": \"Sp. Defense\",\"value\": 50,\"max\": 50},{\"name\": \"Speed\",\"value\": 90,\"max\": 90}]";
-        var ability = "{\"name\": \"Static\",\"description\": \"May cause paralysis if touched\"}";
-        var pokemons = "[{\"name\": \"Pikachu\",\"types\": " + types + ",\"level\": 5,\"gender\": \"Male\",\"isShiny\": false,\"id\": 25,\"Description\": \"Mouse Pokemon\",\"ability\": " + ability + ",\"nature\": \"Brave\",\"moves\": " + moves + ",\"item\": " + item + ",\"stats\": " + stats + "}]";
+        var pokemons = List.of(
+                new PokemonEntity(
+                        "Pikachu",
+                        List.of(new TypeEntity("Electric", new DamageRelation(
+                                List.of("Ground"),
+                                List.of("Flying", "Water"),
+                                List.of("Electric"),
+                                List.of("Electric", "Flying", "Steel"),
+                                List.of("Ground"),
+                                List.of("Ground", "Grass")
+                        ))),
+                        1,
+                        new AbilityEntity("Static", "May cause paralysis if touched"),
+                        "Brave",
+                        GenderEnum.Male,
+                        false,
+                        25,
+                        List.of(
+                                new MoveEntity("Thunderbolt", 90, 100, 15,
+                                        new MetaEntity("paralysis", 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0), "Electric",
+                                        "special", "A strong electric attack", List.of("Pikachu"))
+                        ),
+                        new ItemEntity(
+                                "Light Ball",
+                                "A strange ball that boosts Pikachu's stats",
+                                "/images/"
+                        ),
+                        List.of(
+                                new StatEntity("hp", 35, 35),
+                                new StatEntity("Attack", 55, 55),
+                                new StatEntity("Defense", 40, 40),
+                                new StatEntity("Sp. Attack", 50, 50),
+                                new StatEntity("Sp. Defense", 50, 50),
+                                new StatEntity("Speed", 90, 90)
+                        ),
+                        60)
+        );
 
         // When
         var responseUpdate = mockMvc.perform(
                 put("/teams/" + teamId).content(
-                        "{\"name\": \"Team Red\",\"avatarId\":\"1\",\"pokemons\": " + pokemons + "}").contentType(
+                        "{\"name\": \"Team Red\",\"avatarId\":\"1\",\"pokemons\": " + objectMapper.writeValueAsString(
+                                pokemons) + "}").contentType(
                         MediaType.APPLICATION_JSON));
 
         // Then
@@ -194,34 +226,6 @@ class TeamTest {
         responseUpdate.andExpect(
                 content().json(objectMapper.writeValueAsString(new TeamResponse(teamId, "Team Red",
                         new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"),
-                        List.of(
-                                new PokemonEntity(
-                                        "Pikachu",
-                                        new TypeEntity[]{new TypeEntity("Electric")},
-                                        5,
-                                        new AbilityEntity("Static", "May cause paralysis if touched"),
-                                        "Brave",
-                                        GenderEnum.Male,
-                                        false,
-                                        25,
-                                        new MoveEntity[]{
-                                                new MoveEntity("Thunderbolt", "Electric", "Special", 90, 100, 15,
-                                                        "A strong electric attack")
-                                        },
-                                        new ItemEntity(
-                                                "Light Ball",
-                                                "A strange ball that boosts Pikachu's stats",
-                                                "/images/"
-                                        ),
-                                        new StatEntity[]{
-                                                new StatEntity("hp", 35, 35),
-                                                new StatEntity("Attack", 55, 55),
-                                                new StatEntity("Defense", 40, 40),
-                                                new StatEntity("Sp. Attack", 50, 50),
-                                                new StatEntity("Sp. Defense", 50, 50),
-                                                new StatEntity("Speed", 90, 90)
-                                        }
-                                ))
-                ))));
+                        pokemons))));
     }
 }

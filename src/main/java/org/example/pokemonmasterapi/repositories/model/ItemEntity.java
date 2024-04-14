@@ -16,5 +16,5 @@ public class ItemEntity {
     private String description;
 
     @NotEmpty
-    private String image;
+    private String sprite;
 }

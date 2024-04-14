@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +17,7 @@ public class PokemonEntity {
 
     @NotEmpty
     @Valid
-    private TypeEntity[] types;
+    private List<TypeEntity> types;
 
     @Min(1)
     private int level;
@@ -38,13 +40,16 @@ public class PokemonEntity {
     @NotEmpty
     @Size(min = 1, max = 4)
     @Valid
-    private MoveEntity[] moves;
-    
+    private List<MoveEntity> moves;
+
     @Valid
     private ItemEntity item;
 
     @NotEmpty
+    @Size(min = 6)
     @Valid
-    private StatEntity[] stats;
+    private List<StatEntity> stats;
 
+    @Positive
+    private int weight;
 }

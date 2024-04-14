@@ -32,6 +32,6 @@ public class AvatarController {
                     "Avatar with name " + avatar.getName() + " already exists");
         }
 
-        return avatarRepository.save(new AvatarEntity(null, avatar.getName(), avatar.getRegion(), avatar.getUrl()));
+        return avatarRepository.save(new AvatarEntity(null, avatar.getName(), avatar.getRegion(), avatar.getSprite()));
     }
 }
