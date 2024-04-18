@@ -19,7 +19,7 @@ public class AbilityController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addAbility(@RequestBody @Validated AbilityCreate ability) {
+    public void createAbility(@RequestBody @Validated AbilityCreate ability) {
         abilityRepository.save(
                 new AbilityEntity(null, ability.getName(), ability.getDescription(), ability.getLearnedBy()));
     }

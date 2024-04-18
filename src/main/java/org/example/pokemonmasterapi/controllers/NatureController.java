@@ -19,7 +19,7 @@ public class NatureController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addNature(@RequestBody @Validated NatureCreate nature) {
+    public void createNature(@RequestBody @Validated NatureCreate nature) {
         natureRepository.save(
                 new NatureEntity(null, nature.getName(), nature.getIncreasedStat(), nature.getDecreasedStat()));
     }

@@ -19,7 +19,7 @@ public class MoveController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addMove(@RequestBody @Validated MoveCreate move) {
+    public void createMove(@RequestBody @Validated MoveCreate move) {
         moveRepository.save(
                 new MoveEntity(null, move.getName(), move.getPower(), move.getAccuracy(), move.getPp(),
                         move.getMeta(), move.getType(), move.getCategory(), move.getDescription(),

@@ -19,7 +19,7 @@ public class PokemonController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addPokemon(@RequestBody @Validated PokemonCreate pokemon) {
+    public void createPokemon(@RequestBody @Validated PokemonCreate pokemon) {
         pokemonRepository.save(
                 new PokemonEntity(null, pokemon.getPokedexId(), pokemon.getName(), pokemon.getTypes(), 1, null,
                         null, pokemon.getGender(), false, null, null, pokemon.getStats(), pokemon.getWeight()));

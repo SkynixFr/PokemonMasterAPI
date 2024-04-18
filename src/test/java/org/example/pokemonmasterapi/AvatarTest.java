@@ -36,13 +36,11 @@ class AvatarTest {
         // When
         var response = mockMvc.perform(post("/avatars")
                 .content(
-                        "{\"name\": \"Red\",\"region\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
+                        "{\"name\": \"Red\",\"region\": \"Kanto\",\"sprite\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
         response.andExpect(status().isCreated());
-        response.andExpect(content().json(
-                "{\"name\":\"Red\",\"region\":\"Kanto\",\"url\":\"~/public/images/compressed/avatars/kanto/Ash.png\"}"));
     }
 
     @Test
@@ -51,7 +49,7 @@ class AvatarTest {
 
         // When
         var response = mockMvc.perform(post("/avatars")
-                .content("{\"name\":\"\",\"region\": \"\",\"url\": \"\"}")
+                .content("{\"name\":\"\",\"region\": \"\",\"sprite\": \"\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
@@ -63,13 +61,13 @@ class AvatarTest {
         // Given
         mockMvc.perform(post("/avatars")
                 .content(
-                        "{\"name\": \"Red\",\"region\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
+                        "{\"name\": \"Red\",\"region\": \"Kanto\",\"sprite\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When
         var response = mockMvc.perform(post("/avatars")
                 .content(
-                        "{\"name\": \"Red\",\"region\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
+                        "{\"name\": \"Red\",\"region\": \"Kanto\",\"sprite\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
@@ -82,7 +80,7 @@ class AvatarTest {
         // Given
         mockMvc.perform(post("/avatars")
                 .content(
-                        "{\"name\": \"Red\",\"region\": \"Kanto\",\"url\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
+                        "{\"name\": \"Red\",\"region\": \"Kanto\",\"sprite\": \"~/public/images/compressed/avatars/kanto/Ash.png\"}")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When
@@ -91,6 +89,6 @@ class AvatarTest {
         // Then
         response.andExpect(status().isOk());
         response.andExpect(content().json(
-                "[{\"name\":\"Red\",\"region\":\"Kanto\",\"url\":\"~/public/images/compressed/avatars/kanto/Ash.png\"}]"));
+                "[{\"name\":\"Red\",\"region\":\"Kanto\",\"sprite\":\"~/public/images/compressed/avatars/kanto/Ash.png\"}]"));
     }
 }

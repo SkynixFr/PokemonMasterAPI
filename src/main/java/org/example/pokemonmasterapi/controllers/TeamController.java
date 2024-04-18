@@ -31,7 +31,7 @@ public class TeamController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TeamResponse addTeam(@RequestBody @Validated TeamCreate team) {
+    public TeamResponse createTeam(@RequestBody @Validated TeamCreate team) {
         if (teamRepository.existsByName(team.getName())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Team with name " + team.getName() + " already exists");
@@ -74,7 +74,7 @@ public class TeamController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public TeamResponse saveTeam(@PathVariable String id, @RequestBody @Validated TeamUpdate team) {
+    public TeamResponse updateTeam(@PathVariable String id, @RequestBody @Validated TeamUpdate team) {
         if (!teamRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found");
         }
