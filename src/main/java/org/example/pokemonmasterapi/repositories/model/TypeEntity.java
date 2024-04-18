@@ -16,5 +16,5 @@ public class TypeEntity {
 
     @NotNull
     @Valid
-    private DamageRelation damageRelation;
+    private DamageRelationEntity damageRelation;
 }

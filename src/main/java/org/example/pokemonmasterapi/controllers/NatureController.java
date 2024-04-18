@@ -5,6 +5,7 @@ import org.example.pokemonmasterapi.controllers.model.NatureCreate;
 import org.example.pokemonmasterapi.repositories.NatureRepository;
 import org.example.pokemonmasterapi.repositories.model.NatureEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class NatureController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addNature(@RequestBody NatureCreate nature) {
+    public void addNature(@RequestBody @Validated NatureCreate nature) {
         natureRepository.save(
                 new NatureEntity(null, nature.getName(), nature.getIncreasedStat(), nature.getDecreasedStat()));
     }

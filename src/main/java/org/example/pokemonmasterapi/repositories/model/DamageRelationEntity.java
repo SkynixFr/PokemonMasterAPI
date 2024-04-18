@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DamageRelation {
+public class DamageRelationEntity {
     @NotEmpty
     private List<String> doubleDamageFrom;
 

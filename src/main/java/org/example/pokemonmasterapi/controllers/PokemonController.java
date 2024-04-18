@@ -5,6 +5,7 @@ import org.example.pokemonmasterapi.controllers.model.PokemonCreate;
 import org.example.pokemonmasterapi.repositories.PokemonRepository;
 import org.example.pokemonmasterapi.repositories.model.PokemonEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class PokemonController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addPokemon(@RequestBody PokemonCreate pokemon) {
+    public void addPokemon(@RequestBody @Validated PokemonCreate pokemon) {
         pokemonRepository.save(
                 new PokemonEntity(null, pokemon.getPokedexId(), pokemon.getName(), pokemon.getTypes(), 1, null,
                         null, pokemon.getGender(), false, null, null, pokemon.getStats(), pokemon.getWeight()));

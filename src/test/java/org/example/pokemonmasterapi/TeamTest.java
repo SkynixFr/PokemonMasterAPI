@@ -179,7 +179,7 @@ class TeamTest {
         var pokemons = List.of(
                 new PokemonEntity(null, 25,
                         "Pikachu",
-                        List.of(new TypeEntity("Electric", new DamageRelation(
+                        List.of(new TypeEntity("Electric", new DamageRelationEntity(
                                 List.of("Ground"),
                                 List.of("Flying", "Water"),
                                 List.of("Electric"),
