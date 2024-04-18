@@ -26,12 +26,12 @@ public class AvatarController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AvatarEntity addAvatar(@RequestBody @Validated AvatarCreate avatar) {
+    public void addAvatar(@RequestBody @Validated AvatarCreate avatar) {
         if (avatarRepository.existsByName(avatar.getName())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Avatar with name " + avatar.getName() + " already exists");
         }
 
-        return avatarRepository.save(new AvatarEntity(null, avatar.getName(), avatar.getRegion(), avatar.getSprite()));
+        avatarRepository.save(new AvatarEntity(null, avatar.getName(), avatar.getRegion(), avatar.getSprite()));
     }
 }
