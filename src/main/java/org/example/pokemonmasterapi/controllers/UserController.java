@@ -7,6 +7,8 @@ import org.example.pokemonmasterapi.repositories.TeamRepository;
 import org.example.pokemonmasterapi.repositories.UserRepository;
 import org.example.pokemonmasterapi.repositories.model.UserEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,17 +20,22 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserController {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse register(@RequestBody @Validated UserCreate userCreate) {
 
+
         if (userRepository.existsByEmail(userCreate.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "User with email " + userCreate.getEmail() + " already exists");
+
         }
         var userBDD = userRepository.save(new UserEntity(null, userCreate.getUsername(), userCreate.getEmail(),
-                userCreate.getPassword(), null,"USER"));
+                passwordEncoder.encode(userCreate.getPassword()), null,"USER"));
         return new UserResponse(userBDD.getId(), userBDD.getUsername(), userBDD.getEmail(), userBDD.getPokemonTeamIds(), userBDD.getRole());
     }
+
+
 }
