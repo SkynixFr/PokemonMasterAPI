@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -34,8 +34,8 @@ public class PokemonTest {
         // Given
 
         // When
-        var response = mockMvc.perform(post("/pokemons")
-                .content("{" +
+        var response = mockMvc.perform(put("/pokemons")
+                .content("[{" +
                         "  \"pokedexId\": 1," +
                         "  \"name\": \"Bulbasaur\"," +
                         "  \"types\": [" +
@@ -72,7 +72,7 @@ public class PokemonTest {
                         "    {\"name\": \"speed\", \"value\": 45, \"max\": 100}" +
                         "  ]," +
                         "  \"weight\": 69" +
-                        "}")
+                        "}]")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
@@ -82,8 +82,8 @@ public class PokemonTest {
     @Test
     public void getPokemonsReturnOkStatus() throws Exception {
         // Given
-        mockMvc.perform(post("/pokemons")
-                .content("{" +
+        mockMvc.perform(put("/pokemons")
+                .content("[{" +
                         "  \"pokedexId\": 1," +
                         "  \"name\": \"Bulbasaur\"," +
                         "  \"types\": [" +
@@ -120,7 +120,7 @@ public class PokemonTest {
                         "    {\"name\": \"speed\", \"value\": 45, \"max\": 100}" +
                         "  ]," +
                         "  \"weight\": 69" +
-                        "}")
+                        "}]")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When

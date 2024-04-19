@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,11 +20,22 @@ public class MoveController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createMove(@RequestBody @Validated MoveCreate move) {
-        moveRepository.save(
-                new MoveEntity(null, move.getName(), move.getPower(), move.getAccuracy(), move.getPp(),
-                        move.getMeta(), move.getType(), move.getCategory(), move.getDescription(),
-                        move.getLearnedBy()));
+    public List<MoveEntity> createMove(@RequestBody @Validated List<MoveCreate> moves) {
+        moveRepository.deleteAll();
+        List<MoveEntity> createdMoves = new ArrayList<>();
+        moves.stream().map(move -> new MoveEntity(
+                null,
+                move.getName(),
+                move.getPower(),
+                move.getAccuracy(),
+                move.getPp(),
+                move.getMeta(),
+                move.getType(),
+                move.getCategory(),
+                move.getDescription(),
+                move.getLearnedBy()
+        )).forEach(move -> createdMoves.add(moveRepository.save(move)));
+        return createdMoves;
     }
 
     @GetMapping

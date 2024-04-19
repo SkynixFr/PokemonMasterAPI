@@ -37,4 +37,5 @@ public class PokemonCreate {
 
     @Positive
     private int weight;
+    
 }
