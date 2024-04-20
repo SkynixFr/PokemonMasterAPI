@@ -26,12 +26,39 @@ public class AvatarController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createAvatar(@RequestBody @Validated AvatarCreate avatar) {
+    public AvatarEntity createAvatar(@RequestBody @Validated AvatarCreate avatar) {
         if (avatarRepository.existsByName(avatar.getName())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Avatar with name " + avatar.getName() + " already exists");
         }
 
-        avatarRepository.save(new AvatarEntity(null, avatar.getName(), avatar.getRegion(), avatar.getSprite()));
+        return avatarRepository.save(new AvatarEntity(null, avatar.getName(), avatar.getRegion(), avatar.getSprite()));
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public AvatarEntity updateAvatar(@PathVariable String id, @RequestBody @Validated AvatarCreate avatar) {
+        if (!avatarRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Avatar with id " + id + " not found");
+        }
+
+        if (avatarRepository.existsByName(avatar.getName())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Avatar with name " + avatar.getName() + " already exists");
+        }
+
+        return avatarRepository.save(new AvatarEntity(id, avatar.getName(), avatar.getRegion(), avatar.getSprite()));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAvatar(@PathVariable String id) {
+        if (!avatarRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Avatar with id " + id + " not found");
+        }
+
+        avatarRepository.deleteById(id);
     }
 }
