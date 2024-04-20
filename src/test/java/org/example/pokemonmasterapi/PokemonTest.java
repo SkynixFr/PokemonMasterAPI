@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -34,7 +34,7 @@ public class PokemonTest {
         // Given
 
         // When
-        var response = mockMvc.perform(put("/pokemons")
+        var response = mockMvc.perform(post("/pokemons")
                 .content("[{" +
                         "  \"pokedexId\": 1," +
                         "  \"name\": \"Bulbasaur\"," +
@@ -82,7 +82,7 @@ public class PokemonTest {
     @Test
     public void getPokemonsReturnOkStatus() throws Exception {
         // Given
-        mockMvc.perform(put("/pokemons")
+        mockMvc.perform(post("/pokemons")
                 .content("[{" +
                         "  \"pokedexId\": 1," +
                         "  \"name\": \"Bulbasaur\"," +

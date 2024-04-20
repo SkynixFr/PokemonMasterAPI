@@ -36,7 +36,7 @@ public class AbilityTest {
         // When
         var response = mockMvc.perform(post("/abilities")
                 .content(
-                        "{\"name\": \"Overgrow\",\"description\": \"Powers up Grass-type moves in a pinch\",\"learnedBy\": [\"Bulbasaur\",\"Ivysaur\",\"Venusaur\"]}")
+                        "[{\"name\": \"Overgrow\",\"description\": \"Powers up Grass-type moves in a pinch\",\"learnedBy\": [\"Bulbasaur\",\"Ivysaur\",\"Venusaur\"]}]")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
@@ -48,7 +48,7 @@ public class AbilityTest {
         // Given
         mockMvc.perform(post("/abilities")
                 .content(
-                        "{\"name\": \"Overgrow\",\"description\": \"Powers up Grass-type moves in a pinch\",\"learnedBy\": [\"Bulbasaur\",\"Ivysaur\",\"Venusaur\"]}")
+                        "[{\"name\": \"Overgrow\",\"description\": \"Powers up Grass-type moves in a pinch\",\"learnedBy\": [\"Bulbasaur\",\"Ivysaur\",\"Venusaur\"]}]")
                 .contentType(MediaType.APPLICATION_JSON));
         // When
         var response = mockMvc.perform(get("/abilities"));

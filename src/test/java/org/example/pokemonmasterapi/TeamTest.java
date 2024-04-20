@@ -177,7 +177,7 @@ class TeamTest {
         var teamId = teamRepository.save(new TeamEntity(null, "Team Red", "1", null)).getId();
 
         var pokemons = List.of(
-                new PokemonEntity(null, 25,
+                new PokemonEntity(25,
                         "Pikachu",
                         List.of(new TypeEntity("Electric", new DamageRelationEntity(
                                 List.of("Ground"),
