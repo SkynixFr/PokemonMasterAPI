@@ -19,9 +19,18 @@ public class NatureController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNature(@RequestBody @Validated NatureCreate nature) {
-        natureRepository.save(
-                new NatureEntity(null, nature.getName(), nature.getIncreasedStat(), nature.getDecreasedStat()));
+    public List<NatureEntity> createNature(@RequestBody @Validated List<NatureCreate> natures) {
+        natureRepository.deleteAll();
+        List<NatureEntity> createdNatures = new java.util.ArrayList<>();
+        natures.stream()
+                .map(nature -> new NatureEntity(
+                        null,
+                        nature.getName(),
+                        nature.getIncreasedStat(),
+                        nature.getDecreasedStat()
+                ))
+                .forEach(nature -> createdNatures.add(natureRepository.save(nature)));
+        return createdNatures;
     }
 
     @GetMapping
