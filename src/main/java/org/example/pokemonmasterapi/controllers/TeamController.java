@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/teams")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:*")
 public class TeamController {
     private final TeamRepository teamRepository;
     private final AvatarRepository avatarRepository;
