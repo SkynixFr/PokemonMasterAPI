@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/moves")
-@CrossOrigin(origins = "http://localhost:*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class MoveController {
     private final MoveRepository moveRepository;
 

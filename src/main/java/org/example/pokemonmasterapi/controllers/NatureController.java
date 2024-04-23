@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/natures")
-@CrossOrigin(origins = "http://localhost:*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class NatureController {
     private final NatureRepository natureRepository;
 

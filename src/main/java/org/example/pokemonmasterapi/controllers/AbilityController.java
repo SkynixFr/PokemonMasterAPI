@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/abilities")
-@CrossOrigin(origins = "http://localhost:*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AbilityController {
     private final AbilityRepository abilityRepository;
 
