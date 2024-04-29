@@ -12,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,6 +34,8 @@ public class UserTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired private UserRepository userRepository;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @AfterEach
     public void tearDown() {
@@ -106,8 +110,78 @@ public class UserTest {
                         .contentType(MediaType.APPLICATION_JSON));
         // Then
         response.andExpect(status().isBadRequest());
-         }
+    }
 
+    @Test
+    public void LoginUserReturnOkStatus() throws Exception {
+        // Given
+        userRepository.save(
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"), null, "USER"));
+        // When
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isOk());
+        response.andExpect(content().string(containsString("accessToken")));
+        response.andExpect(content().string(containsString("refreshToken")));
+    }
 
+    @Test
+    public void LoginUserWithInvalidEmailReturnNotFoundStatus() throws Exception {
+        // Given
+        // When
+        userRepository.save(
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        null, "USER"));
+        // When
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu1@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void LoginUserWithInvalidPasswordReturnUnauthorizedStatus() throws Exception {
+        // Given
+        // When
+        userRepository.save(
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        null, "USER"));
+        // When
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP@34\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void LoginUserWithEmailInvalidReturnBadRequestStatus() throws Exception {
+        // Given
+        // When
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu\",\"password\": \"JesuisunMDP-33\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void LoginUserWithPasswordInvalidReturnBadRequestStatus() throws Exception {
+        // Given
+        // When
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isBadRequest());
+    }
 
 }
