@@ -35,7 +35,7 @@ public class PokemonTest {
 
         // When
         var response = mockMvc.perform(post("/pokemons")
-                .content("{" +
+                .content("[{" +
                         "  \"pokedexId\": 1," +
                         "  \"name\": \"Bulbasaur\"," +
                         "  \"types\": [" +
@@ -72,7 +72,7 @@ public class PokemonTest {
                         "    {\"name\": \"speed\", \"value\": 45, \"max\": 100}" +
                         "  ]," +
                         "  \"weight\": 69" +
-                        "}")
+                        "}]")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
@@ -83,7 +83,7 @@ public class PokemonTest {
     public void getPokemonsReturnOkStatus() throws Exception {
         // Given
         mockMvc.perform(post("/pokemons")
-                .content("{" +
+                .content("[{" +
                         "  \"pokedexId\": 1," +
                         "  \"name\": \"Bulbasaur\"," +
                         "  \"types\": [" +
@@ -120,7 +120,7 @@ public class PokemonTest {
                         "    {\"name\": \"speed\", \"value\": 45, \"max\": 100}" +
                         "  ]," +
                         "  \"weight\": 69" +
-                        "}")
+                        "}]")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When

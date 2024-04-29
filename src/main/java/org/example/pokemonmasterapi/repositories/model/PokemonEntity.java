@@ -1,7 +1,5 @@
 package org.example.pokemonmasterapi.repositories.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -18,9 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PokemonEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
-
     @Positive
     private int pokedexId;
 

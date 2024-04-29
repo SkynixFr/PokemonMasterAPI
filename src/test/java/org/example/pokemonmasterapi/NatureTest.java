@@ -35,11 +35,11 @@ public class NatureTest {
 
         // When
         var response = mockMvc.perform(post("/natures")
-                .content("{" +
+                .content("[{" +
                         "  \"name\": \"Adamant\"," +
                         "  \"increasedStat\": \"Attack\"," +
                         "  \"decreasedStat\": \"Special Attack\"" +
-                        "}")
+                        "}]")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
@@ -50,11 +50,11 @@ public class NatureTest {
     public void getNaturesReturnOkStatus() throws Exception {
         // Given
         mockMvc.perform(post("/natures")
-                .content("{" +
+                .content("[{" +
                         "  \"name\": \"Adamant\"," +
                         "  \"increasedStat\": \"Attack\"," +
                         "  \"decreasedStat\": \"Special Attack\"" +
-                        "}")
+                        "}]")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When

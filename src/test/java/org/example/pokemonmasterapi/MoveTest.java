@@ -35,7 +35,7 @@ public class MoveTest {
 
         // When
         var response = mockMvc.perform(post("/moves")
-                .content("{" +
+                .content("[{" +
                         "  \"name\": \"Tackle\"," +
                         "  \"power\": 40," +
                         "  \"accuracy\": 100," +
@@ -58,7 +58,7 @@ public class MoveTest {
                         "  \"category\": \"Physical\"," +
                         "  \"description\": \"A physical attack in which the user charges and slams into the target with its whole body.\"," +
                         "  \"learnedBy\": [\"Bulbasaur\", \"Charmander\", \"Squirtle\"]" +
-                        "}")
+                        "}]")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
@@ -69,7 +69,7 @@ public class MoveTest {
     public void getMovesReturnOkStatus() throws Exception {
         // Given
         mockMvc.perform(post("/moves")
-                .content("{" +
+                .content("[{" +
                         "  \"name\": \"Tackle\"," +
                         "  \"power\": 40," +
                         "  \"accuracy\": 100," +
@@ -92,7 +92,7 @@ public class MoveTest {
                         "  \"category\": \"Physical\"," +
                         "  \"description\": \"A physical attack in which the user charges and slams into the target with its whole body.\"," +
                         "  \"learnedBy\": [\"Bulbasaur\", \"Charmander\", \"Squirtle\"]" +
-                        "}")
+                        "}]")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // When

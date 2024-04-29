@@ -1,6 +1,7 @@
 package org.example.pokemonmasterapi;
 
 import org.example.pokemonmasterapi.repositories.AvatarRepository;
+import org.example.pokemonmasterapi.repositories.model.AvatarEntity;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -90,5 +90,32 @@ class AvatarTest {
         response.andExpect(status().isOk());
         response.andExpect(content().json(
                 "[{\"name\":\"Red\",\"region\":\"Kanto\",\"sprite\":\"~/public/images/compressed/avatars/kanto/Ash.png\"}]"));
+    }
+
+    @Test
+    public void deleteAvatarReturnNoContentStatus() throws Exception {
+        //Given
+        var avatarId = avatarRepository.save(
+                new AvatarEntity(null, "Red", "Kanto", "~/public/images/compressed/avatars/kanto/Ash.png")).getId();
+
+        //When
+        var response = mockMvc.perform(delete("/avatars/" + avatarId));
+
+        //Then
+        response.andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deleteAvatarReturnNotFoundStatus() throws Exception {
+        //Given
+        var avatarId = avatarRepository.save(
+                new AvatarEntity(null, "Red", "Kanto", "~/public/images/compressed/avatars/kanto/Ash.png")).getId();
+
+        //When
+        mockMvc.perform(delete("/avatars/" + avatarId));
+        var response = mockMvc.perform(delete("/avatars/" + avatarId));
+
+        //Then
+        response.andExpect(status().isNotFound());
     }
 }

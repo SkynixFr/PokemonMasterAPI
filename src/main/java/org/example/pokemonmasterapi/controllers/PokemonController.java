@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,10 +20,26 @@ public class PokemonController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createPokemon(@RequestBody @Validated PokemonCreate pokemon) {
-        pokemonRepository.save(
-                new PokemonEntity(null, pokemon.getPokedexId(), pokemon.getName(), pokemon.getTypes(), 1, null,
-                        null, pokemon.getGender(), false, null, null, pokemon.getStats(), pokemon.getWeight()));
+    public List<PokemonEntity> createPokemons(@RequestBody @Validated List<PokemonCreate> pokemons) {
+        pokemonRepository.deleteAll();
+        List<PokemonEntity> createdPokemons = new ArrayList<>();
+        pokemons.stream()
+                .map(pokemon -> new PokemonEntity(
+                        pokemon.getPokedexId(),
+                        pokemon.getName(),
+                        pokemon.getTypes(),
+                        1,
+                        null,
+                        null,
+                        pokemon.getGender(),
+                        false,
+                        null,
+                        null,
+                        pokemon.getStats(),
+                        pokemon.getWeight()
+                ))
+                .forEach(pokemon -> createdPokemons.add(pokemonRepository.save(pokemon)));
+        return createdPokemons;
     }
 
     @GetMapping
