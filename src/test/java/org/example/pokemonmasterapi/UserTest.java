@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -184,4 +184,152 @@ public class UserTest {
         response.andExpect(status().isBadRequest());
     }
 
+    @Test public void DeleteUserReturnOkStatus() throws Exception {
+        // Given
+        userRepository.save(
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        null, "USER"));
+        // When
+        var response = mockMvc.perform(delete("/user/1"));
+        // Then
+        response.andExpect(status().isOk());
+    }
+
+    @Test public void DeleteUserWithInvalidIdReturnNotFoundStatus() throws Exception {
+        // Given
+        // When
+        var response = mockMvc.perform(delete("/user/1"));
+        // Then
+        response.andExpect(status().isNotFound());
+    }
+
+    @Test public void MeReturnOkStatus() throws Exception {
+        // Given
+        userRepository.save(
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        null, "USER"));
+        // When
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        var token = objectMapper.readTree(response.andReturn().getResponse().getContentAsString()).at("/accessToken").asText();
+        var response2 = mockMvc.perform(
+                get("/user/me")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response2.andExpect(status().isOk());
+        response2.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse("1", "Luffysonic", "IlovePikachu@gmail.com", null, "USER"))));
+    }
+
+    @Test public void MeWithInvalidTokenReturnNotFoundStatus() throws Exception {
+        // Given
+        userRepository.save(
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        null, "USER"));
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        var token = objectMapper.readTree(response.andReturn().getResponse().getContentAsString()).at("/accessToken").asText();
+        userRepository.deleteAll();
+        //When
+        var response2 = mockMvc.perform(
+                get("/user/me")
+                        .header("Authorization",
+                                "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response2.andExpect(status().isNotFound());
+    }
+
+    @Test public void UpdateUserReturnOkStatus() throws Exception {
+        // Given
+        userRepository.save(
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        null, "USER"));
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        var token = objectMapper.readTree(response.andReturn().getResponse().getContentAsString()).at("/accessToken").asText();
+        // When
+        var response2 = mockMvc.perform(
+                put("/user/1")
+                        .header("Authorization", "Bearer " + token)
+                        .content("{\"username\": \"Ricky\",\"password\": \"JesuisunMDP-34\",\"email\": \"IloveRaichu@gmail.com\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response2.andExpect(status().isOk());
+        response2.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse("1", "Ricky", "IloveRaichu@gmail.com", null, "USER"))));
+    }
+
+    @Test public void UpdateUserWithInvalidIdReturnNotFoundStatus() throws Exception {
+        // Given
+        userRepository.save(
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        null, "USER"));
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        var token = objectMapper.readTree(response.andReturn().getResponse().getContentAsString()).at("/accessToken").asText();
+        userRepository.deleteAll();
+        // When
+        var response2 = mockMvc.perform(
+                put("/user/1")
+                        .header("Authorization", "Bearer " + token)
+                        .content(
+                                "{\"username\": \"Ricky\",\"password\": \"JesuisunMDP-34\",\"email\": \"IlovePikachu@gmail.com\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response2.andExpect(status().isNotFound());
+    }
+
+    @Test public void UpdateUserWithInvalidTokenReturnNotFoundStatus() throws Exception {
+        // Given
+        userRepository.save(
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        null, "USER"));
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        var token = objectMapper.readTree(response.andReturn().getResponse().getContentAsString()).at(
+                "/accessToken").asText();
+        // When
+        var response2 = mockMvc.perform(
+                put("/user/1")
+                        .header("Authorization", "Bearer " + token)
+                        .content(
+                                "{\"username\": \"\",\"password\": \"\",\"email\": \"\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response2.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void UpdateUserReturnConflictStatus() throws Exception {
+        // Given
+        userRepository.save(
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        null, "USER"));
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        var token = objectMapper.readTree(response.andReturn().getResponse().getContentAsString()).at(
+                "/accessToken").asText();
+        // When
+        var response2 = mockMvc.perform(
+                put("/user/1")
+                        .header("Authorization", "Bearer " + token)
+                        .content(
+                                "{\"username\": \"Ricky\",\"password\": \"JesuisunMDP-34\",\"email\": \"IlovePikachu@gmail.com\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response2.andExpect(status().isConflict());
+        response2.andExpect(status().reason("User with email IlovePikachu@gmail.com already exists"));
+    }
 }

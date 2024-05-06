@@ -40,10 +40,11 @@ public class SpringSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(authorize ->
                         authorize
+                                .requestMatchers("user/**").authenticated()
                                 .requestMatchers("user/register", "/error/**").permitAll()
                                 .requestMatchers("user/login", "/error/**").permitAll()
-                                .requestMatchers("teams/**","/error/**").authenticated()
-
+                                // Allow access to all static resources without authentication
+                                .requestMatchers("teams/**","/error/**").permitAll()
                 )
 
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))

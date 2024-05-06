@@ -2,10 +2,7 @@ package org.example.pokemonmasterapi.controllers;
 
 import lombok.AllArgsConstructor;
 import org.example.pokemonmasterapi.config.JWTService;
-import org.example.pokemonmasterapi.controllers.model.TokenResponse;
-import org.example.pokemonmasterapi.controllers.model.UserCreate;
-import org.example.pokemonmasterapi.controllers.model.UserLogin;
-import org.example.pokemonmasterapi.controllers.model.UserResponse;
+import org.example.pokemonmasterapi.controllers.model.*;
 import org.example.pokemonmasterapi.repositories.TeamRepository;
 import org.example.pokemonmasterapi.repositories.UserRepository;
 import org.example.pokemonmasterapi.repositories.model.UserEntity;
@@ -55,6 +52,58 @@ public class UserController {
         var accessToken = jwtService.generateToken(userBDD);
         var refreshToken = jwtService.generateRefreshToken(userBDD);
         return new TokenResponse(accessToken, refreshToken);
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable String id) {
+        if (!userRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "User with id " + id + " does not exist");
+        }
+        userRepository.deleteById(id);
+    }
+
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse me(@RequestHeader("Authorization") String authorization) {
+        var token = authorization.substring(7);
+        var id = jwtService.extractId(token).toString();
+        var userBDD = userRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return new UserResponse(userBDD.getId(), userBDD.getUsername(), userBDD.getEmail(), userBDD.getPokemonTeamIds(), userBDD.getRole());
+    }
+
+    @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse update(@PathVariable String id, @RequestBody @Validated UserUpdate userUpdate) {
+        if (!userRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "User with id " + id + " does not exist");
+        }
+        var userBDD = userRepository.findById(id).get();
+        if (userUpdate.getEmail() == null && userUpdate.getPassword() == null && userUpdate.getUsername() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "You must provide at least one field to update");
+        }
+        if (userRepository.existsByEmail(userUpdate.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "User with email " + userUpdate.getEmail() + " already exists");
+        }
+        if(userUpdate.getUsername() != null)
+        {
+            userBDD.setUsername(userUpdate.getUsername());
+        }
+        if (userUpdate.getEmail() != null)
+        {
+            userBDD.setEmail(userUpdate.getEmail());
+        }
+        if (userUpdate.getPassword() != null)
+        {
+        userBDD.setPassword(passwordEncoder.encode(userUpdate.getPassword()));
+        }
+        userRepository.save(userBDD);
+        return new UserResponse(userBDD.getId(), userBDD.getUsername(), userBDD.getEmail(), userBDD.getPokemonTeamIds(), userBDD.getRole());
     }
 
 
