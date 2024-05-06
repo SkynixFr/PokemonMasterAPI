@@ -30,7 +30,7 @@ public class PokemonEntity {
     private int level;
 
     @Valid
-    private AbilityEntity ability;
+    private AbilityEntity abilities;
 
     @Valid
     private NatureEntity nature;
