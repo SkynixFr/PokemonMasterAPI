@@ -6,15 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-@Document(collection = "pokemons")
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PokemonEntity {
+public class PokemonTeamEntity {
     @Id
     @Positive
     private int pokedexId;
@@ -47,7 +46,7 @@ public class PokemonEntity {
     @Valid
     private ItemEntity item;
 
-    @Size(min = 6)
+    @Size(min = 9)
     @Valid
     private List<StatEntity> stats;
 

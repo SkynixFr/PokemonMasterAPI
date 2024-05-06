@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.pokemonmasterapi.repositories.model.AvatarEntity;
-import org.example.pokemonmasterapi.repositories.model.PokemonEntity;
+import org.example.pokemonmasterapi.repositories.model.PokemonTeamEntity;
 
 import java.util.List;
 
@@ -18,5 +18,5 @@ public class TeamResponse {
 
     private AvatarEntity avatar;
 
-    private List<PokemonEntity> pokemons;
+    private List<PokemonTeamEntity> pokemons;
 }

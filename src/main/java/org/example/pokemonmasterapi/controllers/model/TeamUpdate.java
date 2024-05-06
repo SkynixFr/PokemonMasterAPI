@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.pokemonmasterapi.repositories.model.PokemonEntity;
+import org.example.pokemonmasterapi.repositories.model.PokemonTeamEntity;
 
 import java.util.List;
 
@@ -26,5 +26,5 @@ public class TeamUpdate {
 
     @Size(min = 1, max = 6)
     @Valid
-    private List<PokemonEntity> pokemons;
+    private List<PokemonTeamEntity> pokemons;
 }

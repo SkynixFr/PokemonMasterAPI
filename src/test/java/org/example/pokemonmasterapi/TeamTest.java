@@ -177,7 +177,7 @@ class TeamTest {
         var teamId = teamRepository.save(new TeamEntity(null, "Team Red", "1", null)).getId();
 
         var pokemons = List.of(
-                new PokemonEntity(25,
+                new PokemonTeamEntity(25,
                         "Pikachu",
                         List.of(new TypeEntity("Electric", new DamageRelationEntity(
                                 List.of("Ground"),
@@ -195,8 +195,10 @@ class TeamTest {
                         List.of(
                                 new MoveEntity(null, "Thunderbolt", 90, 100, 15,
                                         new MetaEntity("paralysis", 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0), "Electric",
-                                        "special", "A strong electric attack", List.of("Pikachu"))
-                        ),
+                                        "special", "A strong electric attack", List.of("Pikachu"), null,
+                                        "selected-pokemons")
+                        )
+                        ,
                         new ItemEntity(null, "Light Ball", "A strange ball that boosts Pikachu's stats", "/images/"),
                         List.of(
                                 new StatEntity("hp", 35, 35),
@@ -204,7 +206,10 @@ class TeamTest {
                                 new StatEntity("Defense", 40, 40),
                                 new StatEntity("Sp. Attack", 50, 50),
                                 new StatEntity("Sp. Defense", 50, 50),
-                                new StatEntity("Speed", 90, 90)
+                                new StatEntity("Speed", 90, 90),
+                                new StatEntity("Accuracy", 100, 100),
+                                new StatEntity("critRate", 4.17, 100),
+                                new StatEntity("evasion", 0, 100)
                         ),
                         60)
         );

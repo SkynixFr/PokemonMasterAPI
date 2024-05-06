@@ -34,5 +34,5 @@ public class TeamEntity {
 
     @Size(min = 1, max = 6)
     @Valid
-    private List<PokemonEntity> pokemons;
+    private List<PokemonTeamEntity> pokemons;
 }
