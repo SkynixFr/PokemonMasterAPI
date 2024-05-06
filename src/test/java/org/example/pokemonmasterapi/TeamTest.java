@@ -195,10 +195,10 @@ class TeamTest {
                         List.of(
                                 new MoveEntity(null, "Thunderbolt", 90, 100, 15,
                                         new MetaEntity("paralysis", 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0), "Electric",
-                                        "special", "A strong electric attack", List.of("Pikachu"), null, List.of(
-                                        new TargetEntity("selected-pokemons"))
-                                )
-                        ),
+                                        "special", "A strong electric attack", List.of("Pikachu"), null,
+                                        "selected-pokemons")
+                        )
+                        ,
                         new ItemEntity(null, "Light Ball", "A strange ball that boosts Pikachu's stats", "/images/"),
                         List.of(
                                 new StatEntity("hp", 35, 35),

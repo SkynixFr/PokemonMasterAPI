@@ -54,5 +54,5 @@ public class MoveEntity {
     private List<StatChangeEntity> statsChange = null;
 
     @Valid
-    private List<TargetEntity> targets;
+    private String target;
 }

@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.pokemonmasterapi.repositories.model.MetaEntity;
 import org.example.pokemonmasterapi.repositories.model.StatChangeEntity;
-import org.example.pokemonmasterapi.repositories.model.TargetEntity;
 
 import java.util.List;
 
@@ -45,8 +44,8 @@ public class MoveCreate {
     private List<String> learnedBy;
 
     @Valid
-    private List<StatChangeEntity> statsChange;
+    private List<StatChangeEntity> statsChange = null;
 
     @Valid
-    private List<TargetEntity> targets;
+    private String target;
 }

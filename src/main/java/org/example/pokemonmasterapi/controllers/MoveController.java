@@ -35,7 +35,7 @@ public class MoveController {
                 move.getDescription(),
                 move.getLearnedBy(),
                 move.getStatsChange(),
-                move.getTargets()
+                move.getTarget()
         )).forEach(move -> createdMoves.add(moveRepository.save(move)));
         return createdMoves;
     }
