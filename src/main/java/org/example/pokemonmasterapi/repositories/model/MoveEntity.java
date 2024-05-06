@@ -22,7 +22,7 @@ public class MoveEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    
+
     @NotEmpty
     private String name;
 
@@ -49,4 +49,10 @@ public class MoveEntity {
 
     @NotEmpty
     private List<String> learnedBy;
+
+    @Valid
+    private List<StatChangeEntity> statChanges = null;
+
+    @Valid
+    private List<TargetEntity> targets;
 }

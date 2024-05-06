@@ -57,7 +57,8 @@ public class MoveTest {
                         "  \"type\": \"Normal\"," +
                         "  \"category\": \"Physical\"," +
                         "  \"description\": \"A physical attack in which the user charges and slams into the target with its whole body.\"," +
-                        "  \"learnedBy\": [\"Bulbasaur\", \"Charmander\", \"Squirtle\"]" +
+                        "  \"learnedBy\": [\"Bulbasaur\", \"Charmander\", \"Squirtle\"]," +
+                        "  \"targets\": [{ \"target\": \"selected-pokemons\" }] " +
                         "}]")
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -91,7 +92,8 @@ public class MoveTest {
                         "  \"type\": \"Normal\"," +
                         "  \"category\": \"Physical\"," +
                         "  \"description\": \"A physical attack in which the user charges and slams into the target with its whole body.\"," +
-                        "  \"learnedBy\": [\"Bulbasaur\", \"Charmander\", \"Squirtle\"]" +
+                        "  \"learnedBy\": [\"Bulbasaur\", \"Charmander\", \"Squirtle\"]," +
+                        "  \"targets\": [{ \"target\": \"selected-pokemons\" }] " +
                         "}]")
                 .contentType(MediaType.APPLICATION_JSON));
 
