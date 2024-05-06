@@ -51,7 +51,7 @@ public class MoveEntity {
     private List<String> learnedBy;
 
     @Valid
-    private List<StatChangeEntity> statChanges = null;
+    private List<StatChangeEntity> statsChange = null;
 
     @Valid
     private List<TargetEntity> targets;

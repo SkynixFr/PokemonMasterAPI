@@ -45,7 +45,7 @@ public class MoveCreate {
     private List<String> learnedBy;
 
     @Valid
-    private List<StatChangeEntity> statChanges;
+    private List<StatChangeEntity> statsChange;
 
     @Valid
     private List<TargetEntity> targets;
