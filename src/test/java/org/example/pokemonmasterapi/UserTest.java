@@ -332,4 +332,63 @@ public class UserTest {
         response2.andExpect(status().isConflict());
         response2.andExpect(status().reason("User with email IlovePikachu@gmail.com already exists"));
     }
+
+    @Test
+    public void GetAnewTokenReturnOkStatus() throws Exception {
+        // Given
+        userRepository.save(
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        null, "USER"));
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        var refreshToken = objectMapper.readTree(response.andReturn().getResponse().getContentAsString()).at(
+                "/refreshToken").asText();
+        // When
+        var response2 = mockMvc.perform(
+                post("/user/refreshToken")
+                        .header("Authorization", "Bearer " + refreshToken)
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response2.andExpect(status().isOk());
+        response2.andExpect(content().string(containsString("accessToken")));
+    }
+
+    @Test
+    public void GetAnewTokenWithInvalidTokenReturnNotFoundStatus() throws Exception {
+        // Given
+        userRepository.save(
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        null, "USER"));
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        var refreshToken = objectMapper.readTree(response.andReturn().getResponse().getContentAsString()).at(
+                "/refreshToken").asText();
+        userRepository.deleteAll();
+        // When
+        var response2 = mockMvc.perform(
+                post("/user/refreshToken")
+                        .header("Authorization", "Bearer " + refreshToken)
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response2.andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void GetAnewTokenWithInvalidRefreshTokenReturnInvalidStatus() throws Exception {
+        // Given
+        // When
+        var response = mockMvc.perform(
+                post("/user/refreshToken")
+                        .header("Authorization", "Bearer " + " ")
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        response.andExpect(status().isUnauthorized());
+    }
+
+
+
 }
