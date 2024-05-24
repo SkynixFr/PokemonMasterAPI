@@ -106,5 +106,16 @@ public class UserController {
         return new UserResponse(userBDD.getId(), userBDD.getUsername(), userBDD.getEmail(), userBDD.getPokemonTeamIds(), userBDD.getRole());
     }
 
+    @PostMapping("/refreshToken")
+    @ResponseStatus(HttpStatus.OK)
+    public RefreshTokenResponse refreshToken(@RequestHeader("Authorization") String authorization) {
+        var token = authorization.substring(7);
+        var id = jwtService.extractId(token).toString();
+        var userBDD = userRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        var accessToken = jwtService.generateToken(userBDD);
+        return new RefreshTokenResponse(accessToken);
+    }
+
 
 }
