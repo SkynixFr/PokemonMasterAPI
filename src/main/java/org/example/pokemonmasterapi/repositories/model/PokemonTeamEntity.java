@@ -29,7 +29,7 @@ public class PokemonTeamEntity {
     private int level;
 
     @Valid
-    private AbilityEntity abilities;
+    private AbilityEntity ability;
 
     @Valid
     private NatureEntity nature;
