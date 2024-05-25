@@ -201,15 +201,15 @@ class TeamTest {
                         ,
                         new ItemEntity(null, "Light Ball", "A strange ball that boosts Pikachu's stats", "/images/"),
                         List.of(
-                                new StatEntity("hp", 35, 35),
-                                new StatEntity("Attack", 55, 55),
-                                new StatEntity("Defense", 40, 40),
-                                new StatEntity("Sp. Attack", 50, 50),
-                                new StatEntity("Sp. Defense", 50, 50),
-                                new StatEntity("Speed", 90, 90),
-                                new StatEntity("Accuracy", 100, 100),
-                                new StatEntity("critRate", 4.17, 100),
-                                new StatEntity("evasion", 0, 100)
+                                new StatEntity("hp", 35, 35, 0, 0, 0),
+                                new StatEntity("Attack", 55, 55, 0, 0, 0),
+                                new StatEntity("Defense", 40, 40, 0, 0, 0),
+                                new StatEntity("Sp. Attack", 50, 50, 0, 0, 0),
+                                new StatEntity("Sp. Defense", 50, 50, 0, 0, 0),
+                                new StatEntity("Speed", 90, 90, 0, 0, 0),
+                                new StatEntity("Accuracy", 100, 100, 0, 0, 0),
+                                new StatEntity("critRate", 4.17, 100, 0, 0, 0),
+                                new StatEntity("evasion", 0, 100, 0, 0, 0)
                         ),
                         60)
         );
