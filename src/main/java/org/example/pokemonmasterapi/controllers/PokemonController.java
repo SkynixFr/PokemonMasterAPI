@@ -33,7 +33,7 @@ public class PokemonController {
                         null,
                         pokemon.getGender(),
                         false,
-                        null,
+                        new ArrayList<>(),
                         null,
                         pokemon.getStats(),
                         pokemon.getWeight()

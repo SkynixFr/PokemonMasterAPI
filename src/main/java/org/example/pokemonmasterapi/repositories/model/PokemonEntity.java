@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "pokemons")
@@ -42,7 +43,7 @@ public class PokemonEntity {
 
     @Size(min = 1, max = 4)
     @Valid
-    private List<MoveEntity> moves;
+    private List<MoveEntity> moves = new ArrayList<>();
 
     @Valid
     private ItemEntity item;
