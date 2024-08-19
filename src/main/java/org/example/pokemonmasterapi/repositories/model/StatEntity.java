@@ -31,4 +31,8 @@ public class StatEntity {
     @PositiveOrZero
     @Min(0)
     private int total;
+
+    @PositiveOrZero
+    @Min(0)
+    private int base;
 }

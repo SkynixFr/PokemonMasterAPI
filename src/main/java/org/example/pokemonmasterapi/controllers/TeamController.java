@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -40,7 +41,7 @@ public class TeamController {
         var avatar = avatarRepository.findById(team.getAvatarId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Avatar does not exist"));
 
-        var teamBDD = teamRepository.save(new TeamEntity(null, team.getName(), avatar.getId(), null));
+        var teamBDD = teamRepository.save(new TeamEntity(null, team.getName(), avatar.getId(), new ArrayList<>()));
 
         return new TeamResponse(teamBDD.getId(), teamBDD.getName(), avatar, teamBDD.getPokemons());
     }

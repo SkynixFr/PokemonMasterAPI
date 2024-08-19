@@ -46,7 +46,7 @@ public class PokemonTeamEntity {
     @Valid
     private ItemEntity item;
 
-    @Size(min = 9)
+    @Size(min = 6, max = 6)
     @Valid
     private List<StatEntity> stats;
 

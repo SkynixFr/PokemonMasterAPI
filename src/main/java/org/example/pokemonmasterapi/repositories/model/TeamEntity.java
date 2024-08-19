@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "teams")
@@ -34,5 +35,5 @@ public class TeamEntity {
 
     @Size(min = 1, max = 6)
     @Valid
-    private List<PokemonTeamEntity> pokemons;
+    private List<PokemonTeamEntity> pokemons = new ArrayList<>();
 }
