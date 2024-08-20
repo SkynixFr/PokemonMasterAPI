@@ -76,12 +76,16 @@ public class TeamController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public TeamResponse updateTeam(@PathVariable String id, @RequestBody @Validated TeamUpdate team) {
-        if (!teamRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found");
-        }
+        var existingTeam = teamRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
 
         var avatar = avatarRepository.findById(team.getAvatarId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Avatar does not exist"));
+
+        if(!existingTeam.getName().equals(team.getName()) && teamRepository.existsByName(team.getName())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Team with name " + team.getName() + " already exists");
+        }
 
         var newTeam = teamRepository.save(new TeamEntity(id, team.getName(), avatar.getId(), team.getPokemons()));
 
