@@ -24,7 +24,7 @@ public class TeamUpdate {
     @NotEmpty
     private String avatarId;
 
-    @Size(min = 1, max = 6)
+    @Size(max = 6)
     @Valid
     private List<PokemonTeamEntity> pokemons;
 }
