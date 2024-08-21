@@ -91,4 +91,17 @@ public class TeamController {
 
         return new TeamResponse(newTeam.getId(), newTeam.getName(), avatar, newTeam.getPokemons());
     }
+
+    @PostMapping("/copy")
+    @ResponseStatus(HttpStatus.CREATED)
+    public TeamResponse copyTeam(@RequestBody @Validated TeamResponse team) {
+        if (teamRepository.existsByName(team.getName())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Team with name " + team.getName() + " already exists");
+        }
+
+        var teamBDD = teamRepository.save(new TeamEntity(team.getId(), team.getName(), team.getAvatar().getId(), team.getPokemons()));
+
+        return new TeamResponse(teamBDD.getId(), teamBDD.getName(), team.getAvatar(), teamBDD.getPokemons());
+    }
 }
