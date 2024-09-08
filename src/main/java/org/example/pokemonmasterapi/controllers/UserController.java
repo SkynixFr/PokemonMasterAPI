@@ -3,6 +3,7 @@ package org.example.pokemonmasterapi.controllers;
 import lombok.AllArgsConstructor;
 import org.example.pokemonmasterapi.config.JWTService;
 import org.example.pokemonmasterapi.controllers.model.*;
+import org.example.pokemonmasterapi.repositories.AvatarRepository;
 import org.example.pokemonmasterapi.repositories.TeamRepository;
 import org.example.pokemonmasterapi.repositories.UserRepository;
 import org.example.pokemonmasterapi.repositories.model.UserEntity;
@@ -19,8 +20,16 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserController {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final AvatarRepository avatarRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final JWTService jwtService;
+
+    public UserResponse mappingUserResponse(UserEntity user) {
+        var avatar = avatarRepository.findById(user.getAvatarId())
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Avatar does not exist"));
+        return new UserResponse(user.getId(), user.getUsername(), user.getEmail(),avatar, user.getPokemonTeamIds(), user.getRole());
+    }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -32,9 +41,11 @@ public class UserController {
                     "User with email " + userCreate.getEmail() + " already exists");
 
         }
+        var avatar = avatarRepository.findById(userCreate.getAvatarId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Avatar does not exist"));
         var userBDD = userRepository.save(new UserEntity(null, userCreate.getUsername(), userCreate.getEmail(),
-                passwordEncoder.encode(userCreate.getPassword()), null,"USER"));
-        return new UserResponse(userBDD.getId(), userBDD.getUsername(), userBDD.getEmail(), userBDD.getPokemonTeamIds(), userBDD.getRole());
+                passwordEncoder.encode(userCreate.getPassword()),avatar.getId(), null,"USER"));
+        return new UserResponse(userBDD.getId(), userBDD.getUsername(), userBDD.getEmail(),avatar, userBDD.getPokemonTeamIds(), userBDD.getRole());
     }
 
     @PostMapping("/login")
@@ -71,7 +82,7 @@ public class UserController {
         var id = jwtService.extractId(token).toString();
         var userBDD = userRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        return new UserResponse(userBDD.getId(), userBDD.getUsername(), userBDD.getEmail(), userBDD.getPokemonTeamIds(), userBDD.getRole());
+        return this.mappingUserResponse(userBDD);
     }
 
     @PutMapping("{id}")
@@ -102,8 +113,12 @@ public class UserController {
         {
         userBDD.setPassword(passwordEncoder.encode(userUpdate.getPassword()));
         }
+        if (userUpdate.getAvatarId() != null)
+        {
+            userBDD.setAvatarId(userUpdate.getAvatarId());
+        }
         userRepository.save(userBDD);
-        return new UserResponse(userBDD.getId(), userBDD.getUsername(), userBDD.getEmail(), userBDD.getPokemonTeamIds(), userBDD.getRole());
+        return this.mappingUserResponse(userBDD);
     }
 
     @PostMapping("/refreshToken")

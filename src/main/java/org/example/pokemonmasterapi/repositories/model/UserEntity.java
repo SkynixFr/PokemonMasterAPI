@@ -4,6 +4,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,8 @@ public class UserEntity implements UserDetails {
 
     @NotBlank
     private String password;
+    @NotEmpty
+    private String avatarId;
 
     @Size(min = 1, max = 6)
     @Valid

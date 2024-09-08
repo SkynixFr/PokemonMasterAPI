@@ -5,6 +5,7 @@ import org.example.pokemonmasterapi.controllers.model.UserResponse;
 import org.example.pokemonmasterapi.repositories.AvatarRepository;
 import org.example.pokemonmasterapi.repositories.TeamRepository;
 import org.example.pokemonmasterapi.repositories.UserRepository;
+import org.example.pokemonmasterapi.repositories.model.AvatarEntity;
 import org.example.pokemonmasterapi.repositories.model.UserEntity;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -47,27 +48,32 @@ public class UserTest {
     @Test
     public void RegisterUserReturnCreatedStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         // When
         var response = mockMvc.perform(
                 post("/user/register")
-                        .content("{\"username\": \"Ricky\",\"password\": \"JesuisunMDP-33\",\"email\": \"IlovePikachu@gmail.com\",\"role\": \"USER\"}")
+                        .content("{\"username\": \"Ricky\",\"password\": \"JesuisunMDP-33\",\"email\": \"IlovePikachu@gmail.com\",\"avatarId\":\"1\",\"role\": \"USER\"}")
                         .contentType(MediaType.APPLICATION_JSON));
         // Then
         var responseID = objectMapper.readTree(response.andReturn().getResponse().getContentAsString()).at(
                 "/id").asText();
         response.andExpect(status().isCreated());
-        response.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse(responseID, "Ricky","IlovePikachu@gmail.com", null, "USER"))));
+        response.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse(responseID, "Ricky","IlovePikachu@gmail.com",
+                new AvatarEntity("1","Team Red","Kanto","~/public/images/compressed/avatars/kanto/red.png"), null, "USER"))));
     }
 
     @Test
     public void RegisterUserReturnConflictStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         userRepository.save(
-                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", "JesuisunMDP-33", null, "USER"));
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", "JesuisunMDP-33","1", null, "USER"));
         // When
         var response = mockMvc.perform(
                 post("/user/register")
-                        .content("{\"username\": \"Ricky\",\"password\": \"JesuisunMDP-33\",\"email\": \"IlovePikachu@gmail.com\",\"role\": \"USER\"}")
+                        .content("{\"username\": \"Ricky\",\"password\": \"JesuisunMDP-33\",\"email\": \"IlovePikachu@gmail.com\",\"avatarId\":\"1\",\"role\": \"USER\"}")
                         .contentType(MediaType.APPLICATION_JSON));
         // Then
         response.andExpect(status().isConflict());
@@ -77,10 +83,12 @@ public class UserTest {
     @Test
     public void RegisterUserWithEmailInvalidReturnBadRequestStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         // When
         var response = mockMvc.perform(
                 post("/user/register")
-                        .content("{\"username\": \"Ricky\",\"password\": \"JesuisunMDP-33\",\"email\": \"IlovePikachu\",\"role\": \"USER\"}")
+                        .content("{\"username\": \"Ricky\",\"password\": \"JesuisunMDP-33\",\"email\": \"IlovePikachu\",\"avatarId\":\"1\",\"role\": \"USER\"}")
                         .contentType(MediaType.APPLICATION_JSON));
         // Then
         response.andExpect(status().isBadRequest());
@@ -89,11 +97,13 @@ public class UserTest {
     @Test
     public void RegisterUserWithRoleInvalidReturnBadRequestStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         // When
         var response = mockMvc.perform(
                 post("/user/register")
                         .content(
-                                "{\"username\": \"Ricky\",\"password\": \"JesuisunMDP-33\",\"email\": \"IlovePikachu@gmaiL.com\",\"role\": \"USER2\"}")
+                                "{\"username\": \"Ricky\",\"password\": \"JesuisunMDP-33\",\"email\": \"IlovePikachu@gmaiL.com\",\"avatarId\":\"1\",\"role\": \"USER2\"}")
                         .contentType(MediaType.APPLICATION_JSON));
         // Then
         response.andExpect(status().isBadRequest());
@@ -102,11 +112,13 @@ public class UserTest {
     @Test
     public void RegisterUserWithUsernameInvalidReturnBadRequestStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         // When
         var response = mockMvc.perform(
                 post("/user/register")
                         .content(
-                                "{\"username\": \"\",\"password\": \"JesuisunMDP-33\",\"email\": \"IlovePikachu@gmail.com\",\"role\": \"USER\"}")
+                                "{\"username\": \"\",\"password\": \"JesuisunMDP-33\",\"email\": \"IlovePikachu@gmail.com\",\"avatarId\":\"1\",\"role\": \"USER\"}")
                         .contentType(MediaType.APPLICATION_JSON));
         // Then
         response.andExpect(status().isBadRequest());
@@ -115,8 +127,10 @@ public class UserTest {
     @Test
     public void LoginUserReturnOkStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         userRepository.save(
-                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"), null, "USER"));
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),"1", null, "USER"));
         // When
         var response = mockMvc.perform(
                 post("/user/login")
@@ -131,10 +145,12 @@ public class UserTest {
     @Test
     public void LoginUserWithInvalidEmailReturnNotFoundStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         // When
         userRepository.save(
-                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
-                        null, "USER"));
+                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33")
+                        , "1", null, "USER"));
         // When
         var response = mockMvc.perform(
                 post("/user/login")
@@ -147,10 +163,11 @@ public class UserTest {
     @Test
     public void LoginUserWithInvalidPasswordReturnUnauthorizedStatus() throws Exception {
         // Given
-        // When
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         userRepository.save(
                 new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
-                        null, "USER"));
+                        "1",null, "USER"));
         // When
         var response = mockMvc.perform(
                 post("/user/login")
@@ -186,9 +203,11 @@ public class UserTest {
 
     @Test public void DeleteUserReturnOkStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         userRepository.save(
                 new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
-                        null, "USER"));
+                        "1",null, "USER"));
         // When
         var response = mockMvc.perform(delete("/user/1"));
         // Then
@@ -205,9 +224,11 @@ public class UserTest {
 
     @Test public void MeReturnOkStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         userRepository.save(
-                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
-                        null, "USER"));
+                new UserEntity("2", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        "1",null, "USER"));
         // When
         var response = mockMvc.perform(
                 post("/user/login")
@@ -220,14 +241,17 @@ public class UserTest {
                         .contentType(MediaType.APPLICATION_JSON));
         // Then
         response2.andExpect(status().isOk());
-        response2.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse("1", "Luffysonic", "IlovePikachu@gmail.com", null, "USER"))));
+        response2.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse("2", "Luffysonic","IlovePikachu@gmail.com",
+                new AvatarEntity("1","Team Red","Kanto","~/public/images/compressed/avatars/kanto/red.png"), null, "USER"))));
     }
 
     @Test public void MeWithInvalidTokenReturnNotFoundStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         userRepository.save(
-                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
-                        null, "USER"));
+                new UserEntity("2", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        "1",null, "USER"));
         var response = mockMvc.perform(
                 post("/user/login")
                         .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
@@ -246,9 +270,11 @@ public class UserTest {
 
     @Test public void UpdateUserReturnOkStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         userRepository.save(
-                new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
-                        null, "USER"));
+                new UserEntity("2", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        "1",null, "USER"));
         var response = mockMvc.perform(
                 post("/user/login")
                         .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
@@ -256,20 +282,23 @@ public class UserTest {
         var token = objectMapper.readTree(response.andReturn().getResponse().getContentAsString()).at("/accessToken").asText();
         // When
         var response2 = mockMvc.perform(
-                put("/user/1")
+                put("/user/2")
                         .header("Authorization", "Bearer " + token)
                         .content("{\"username\": \"Ricky\",\"password\": \"JesuisunMDP-34\",\"email\": \"IloveRaichu@gmail.com\"}")
                         .contentType(MediaType.APPLICATION_JSON));
         // Then
         response2.andExpect(status().isOk());
-        response2.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse("1", "Ricky", "IloveRaichu@gmail.com", null, "USER"))));
+        response2.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse("2", "Ricky","IloveRaichu@gmail.com",
+                new AvatarEntity("1","Team Red","Kanto","~/public/images/compressed/avatars/kanto/red.png"), null, "USER"))));
     }
 
     @Test public void UpdateUserWithInvalidIdReturnNotFoundStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         userRepository.save(
                 new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
-                        null, "USER"));
+                        "1",null, "USER"));
         var response = mockMvc.perform(
                 post("/user/login")
                         .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
@@ -289,9 +318,11 @@ public class UserTest {
 
     @Test public void UpdateUserWithInvalidTokenReturnNotFoundStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         userRepository.save(
                 new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
-                        null, "USER"));
+                        "1",null, "USER"));
         var response = mockMvc.perform(
                 post("/user/login")
                         .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
@@ -312,9 +343,11 @@ public class UserTest {
     @Test
     public void UpdateUserReturnConflictStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         userRepository.save(
                 new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
-                        null, "USER"));
+                        "1",null, "USER"));
         var response = mockMvc.perform(
                 post("/user/login")
                         .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
@@ -336,9 +369,11 @@ public class UserTest {
     @Test
     public void GetAnewTokenReturnOkStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         userRepository.save(
                 new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
-                        null, "USER"));
+                        "1",null, "USER"));
         var response = mockMvc.perform(
                 post("/user/login")
                         .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
@@ -358,9 +393,11 @@ public class UserTest {
     @Test
     public void GetAnewTokenWithInvalidTokenReturnNotFoundStatus() throws Exception {
         // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
         userRepository.save(
                 new UserEntity("1", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
-                        null, "USER"));
+                        "1",null, "USER"));
         var response = mockMvc.perform(
                 post("/user/login")
                         .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
