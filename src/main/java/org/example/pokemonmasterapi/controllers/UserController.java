@@ -93,7 +93,7 @@ public class UserController {
                     "User with id " + id + " does not exist");
         }
         var userBDD = userRepository.findById(id).get();
-        if (userUpdate.getEmail() == null && userUpdate.getPassword() == null && userUpdate.getUsername() == null) {
+        if (userUpdate.getEmail() == null && userUpdate.getPassword() == null && userUpdate.getUsername() == null && userUpdate.getAvatarId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You must provide at least one field to update");
         }
