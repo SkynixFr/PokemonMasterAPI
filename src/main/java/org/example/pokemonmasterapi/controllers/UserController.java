@@ -28,7 +28,7 @@ public class UserController {
         var avatar = avatarRepository.findById(user.getAvatarId())
                 .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Avatar does not exist"));
-        return new UserResponse(user.getId(), user.getUsername(), user.getEmail(),avatar, user.getPokemonTeamIds(), user.getRole());
+        return new UserResponse(user.getId(), user.getUsername(), user.getEmail(),user.getPassword(),avatar, user.getPokemonTeamIds(), user.getRole());
     }
 
     @PostMapping("/register")
@@ -45,7 +45,7 @@ public class UserController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Avatar does not exist"));
         var userBDD = userRepository.save(new UserEntity(null, userCreate.getUsername(), userCreate.getEmail(),
                 passwordEncoder.encode(userCreate.getPassword()),avatar.getId(), null,"USER"));
-        return new UserResponse(userBDD.getId(), userBDD.getUsername(), userBDD.getEmail(),avatar, userBDD.getPokemonTeamIds(), userBDD.getRole());
+        return new UserResponse(userBDD.getId(), userBDD.getUsername(), userBDD.getEmail(),userBDD.getPassword(),avatar, userBDD.getPokemonTeamIds(), userBDD.getRole());
     }
 
     @PostMapping("/login")

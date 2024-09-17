@@ -16,6 +16,7 @@ public class UserResponse {
     private String username;
 
     private String email;
+    private String password;
     private AvatarEntity avatar;
     private List<String> pokemonTeamIds;
     private String role;

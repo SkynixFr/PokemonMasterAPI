@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -58,8 +59,11 @@ public class UserTest {
         // Then
         var responseID = objectMapper.readTree(response.andReturn().getResponse().getContentAsString()).at(
                 "/id").asText();
+        var userBDD = userRepository.findById(responseID).get();
+        assertTrue(passwordEncoder.matches("JesuisunMDP-33", userBDD.getPassword()));
         response.andExpect(status().isCreated());
         response.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse(responseID, "Ricky","IlovePikachu@gmail.com",
+                userBDD.getPassword(),
                 new AvatarEntity("1","Team Red","Kanto","~/public/images/compressed/avatars/kanto/red.png"), null, "USER"))));
     }
 
@@ -240,8 +244,12 @@ public class UserTest {
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON));
         // Then
+        var responseID = objectMapper.readTree(response2.andReturn().getResponse().getContentAsString()).at(
+                "/id").asText();
+        var userBDD = userRepository.findById(responseID).get();
+        assertTrue(passwordEncoder.matches("JesuisunMDP-33", userBDD.getPassword()));
         response2.andExpect(status().isOk());
-        response2.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse("2", "Luffysonic","IlovePikachu@gmail.com",
+        response2.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse("2", "Luffysonic","IlovePikachu@gmail.com",userBDD.getPassword(),
                 new AvatarEntity("1","Team Red","Kanto","~/public/images/compressed/avatars/kanto/red.png"), null, "USER"))));
     }
 
@@ -287,8 +295,12 @@ public class UserTest {
                         .content("{\"username\": \"Ricky\",\"password\": \"JesuisunMDP-34\",\"email\": \"IloveRaichu@gmail.com\"}")
                         .contentType(MediaType.APPLICATION_JSON));
         // Then
+        var responseID = objectMapper.readTree(response2.andReturn().getResponse().getContentAsString()).at(
+                "/id").asText();
+        var userBDD = userRepository.findById(responseID).get();
+        assertTrue(passwordEncoder.matches("JesuisunMDP-34", userBDD.getPassword()));
         response2.andExpect(status().isOk());
-        response2.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse("2", "Ricky","IloveRaichu@gmail.com",
+        response2.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse("2", "Ricky","IloveRaichu@gmail.com",userBDD.getPassword(),
                 new AvatarEntity("1","Team Red","Kanto","~/public/images/compressed/avatars/kanto/red.png"), null, "USER"))));
     }
 
