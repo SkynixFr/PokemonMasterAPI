@@ -41,7 +41,7 @@ public class UserEntity implements UserDetails {
     @NotEmpty
     private String avatarId;
 
-    @Size(min = 1, max = 6)
+    @Size(min = 1, max = 15)
     @Valid
     private List<String> pokemonTeamIds;
 
