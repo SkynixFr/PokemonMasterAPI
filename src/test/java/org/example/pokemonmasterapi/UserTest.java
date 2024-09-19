@@ -304,6 +304,37 @@ public class UserTest {
                 new AvatarEntity("1","Team Red","Kanto","~/public/images/compressed/avatars/kanto/red.png"), null, "USER"))));
     }
 
+    @Test public void UpdateUserAvatarReturnOkStatus() throws Exception {
+        // Given
+        avatarRepository.save(
+                new AvatarEntity("1", "Team Red", "Kanto", "~/public/images/compressed/avatars/kanto/red.png"));
+        avatarRepository.save(
+                new AvatarEntity("2", "Team Blue", "Kanto", "~/public/images/compressed/avatars/kanto/blue.png"));
+        userRepository.save(
+                new UserEntity("2", "Luffysonic", "IlovePikachu@gmail.com", passwordEncoder.encode("JesuisunMDP-33"),
+                        "1",null, "USER"));
+        var response = mockMvc.perform(
+                post("/user/login")
+                        .content("{\"email\": \"IlovePikachu@gmail.com\",\"password\": \"JesuisunMDP-33\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        var token = objectMapper.readTree(response.andReturn().getResponse().getContentAsString()).at("/accessToken").asText();
+        // When
+        var response2 = mockMvc.perform(
+                put("/user/2")
+                        .header("Authorization", "Bearer " + token)
+                        .content("{\"avatarId\": \"2\"}")
+                        .contentType(MediaType.APPLICATION_JSON));
+        // Then
+        var responseID = objectMapper.readTree(response2.andReturn().getResponse().getContentAsString()).at(
+                "/id").asText();
+        var userBDD = userRepository.findById(responseID).get();
+        assertTrue(passwordEncoder.matches("JesuisunMDP-33", userBDD.getPassword()));
+        response2.andExpect(status().isOk());
+        response2.andExpect(content().json(objectMapper.writeValueAsString(new UserResponse("2", "Luffysonic","IlovePikachu@gmail.com",userBDD.getPassword(),
+                new AvatarEntity("2","Team Blue","Kanto","~/public/images/compressed/avatars/kanto/blue.png"), null, "USER"))));
+    }
+
+
     @Test public void UpdateUserWithInvalidIdReturnNotFoundStatus() throws Exception {
         // Given
         avatarRepository.save(

@@ -111,7 +111,7 @@ public class UserController {
         }
         if (userUpdate.getPassword() != null)
         {
-        userBDD.setPassword(passwordEncoder.encode(userUpdate.getPassword()));
+            userBDD.setPassword(passwordEncoder.encode(userUpdate.getPassword()));
         }
         if (userUpdate.getAvatarId() != null)
         {
