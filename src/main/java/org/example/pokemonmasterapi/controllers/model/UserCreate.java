@@ -1,6 +1,7 @@
 package org.example.pokemonmasterapi.controllers.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -25,5 +26,7 @@ public class UserCreate {
     @NotBlank
     @Pattern(regexp = "^(USER|ADMIN)$")
     private String role;
+    @NotEmpty
+    private String avatarId;
 
 }
