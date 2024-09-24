@@ -36,10 +36,14 @@ public class UserController {
     public UserResponse register(@RequestBody @Validated UserCreate userCreate) {
 
 
-        if (userRepository.existsByEmail(userCreate.getEmail())) {
+        if (userRepository.existsByEmailIgnoreCase(userCreate.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "User with email " + userCreate.getEmail() + " already exists");
-
+        }
+        if(userRepository.existsByUsernameIgnoreCase(userCreate.getUsername()))
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "User with username " + userCreate.getUsername() + " already exists");
         }
         var avatar = avatarRepository.findById(userCreate.getAvatarId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Avatar does not exist"));
@@ -97,9 +101,14 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You must provide at least one field to update");
         }
-        if (userRepository.existsByEmail(userUpdate.getEmail())) {
+        if (userUpdate.getEmail()!=null && userRepository.existsByEmailIgnoreCase(userUpdate.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "User with email " + userUpdate.getEmail() + " already exists");
+        }
+        if(userUpdate.getUsername() != null && userRepository.existsByUsernameIgnoreCase(userUpdate.getUsername()))
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "User with username " + userUpdate.getUsername() + " already exists");
         }
         if(userUpdate.getUsername() != null)
         {
