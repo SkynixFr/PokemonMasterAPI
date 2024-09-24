@@ -35,6 +35,9 @@ public class MoveEntity {
     @Positive
     private int pp;
 
+    @Positive
+    private int maxPp;
+
     @Valid
     private MetaEntity meta;
 

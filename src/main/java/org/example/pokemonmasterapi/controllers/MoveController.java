@@ -29,6 +29,7 @@ public class MoveController {
                 move.getPower(),
                 move.getAccuracy(),
                 move.getPp(),
+                move.getMaxPp(),
                 move.getMeta(),
                 move.getType(),
                 move.getCategory(),

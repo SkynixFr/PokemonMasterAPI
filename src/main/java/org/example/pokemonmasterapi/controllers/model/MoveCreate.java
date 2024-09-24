@@ -28,6 +28,9 @@ public class MoveCreate {
     @Positive
     private int pp;
 
+    @Positive
+    private int maxPp;
+
     @Valid
     private MetaEntity meta;
 

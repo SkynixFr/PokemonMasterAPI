@@ -202,7 +202,7 @@ class TeamTest {
                         new NatureEntity("1", "Modest", "Special Attack", "Attack"),
                         GenderEnum.neutral,
                         false,
-                        List.of(new MoveEntity("1","Tackle",40, 100, 35,
+                        List.of(new MoveEntity("1","Tackle",40, 100, 35,35,
                                 new MetaEntity("None", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0),
                                 "Normal", "Physical","Description", List.of("Bulbasaur"), null, "user" )),
                         new ItemEntity("1", "None", "No item", "No item"),

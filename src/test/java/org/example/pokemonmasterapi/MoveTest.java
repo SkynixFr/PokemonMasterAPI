@@ -40,6 +40,7 @@ public class MoveTest {
                         "  \"power\": 40," +
                         "  \"accuracy\": 100," +
                         "  \"pp\": 35," +
+                        "  \"maxPp\": 35," +
                         "  \"meta\": {" +
                         "    \"ailment\": \"Physical\"," +
                         "    \"drain\": 0," +
@@ -75,6 +76,7 @@ public class MoveTest {
                         "  \"power\": 40," +
                         "  \"accuracy\": 100," +
                         "  \"pp\": 35," +
+                        "  \"maxPp\": 35," +
                         "  \"meta\": {" +
                         "    \"ailment\": \"Physical\"," +
                         "    \"drain\": 0," +

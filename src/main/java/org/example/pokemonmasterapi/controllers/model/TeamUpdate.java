@@ -18,7 +18,7 @@ import java.util.List;
 public class TeamUpdate {
     @NotBlank
     @Size(min = 3, max = 20)
-    @Pattern(regexp = "^[\\w -]+$")
+    @Pattern(regexp = "^[a-zA-Z0-9._\\-\\s]*$")
     private String name;
 
     @NotEmpty
