@@ -28,8 +28,8 @@ public class JWTService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                // Token expires in 1 hour
-                .expiresAt(now.plus(1, ChronoUnit.HOURS))
+                // Token expires in 2 hour
+                .expiresAt(now.plus(2, ChronoUnit.HOURS))
                 .claim("username", user.getUsername())
                 .claim("email", user.getEmail())
                 .claim("id", user.getId())
