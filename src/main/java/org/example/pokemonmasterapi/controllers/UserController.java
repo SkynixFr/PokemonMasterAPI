@@ -62,7 +62,7 @@ public class UserController {
         var userBDD = userRepository.findByEmail(userLogin.getEmail());
         if (!passwordEncoder.matches(userLogin.getPassword(), userBDD.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                    "Password for user with email " + userLogin.getEmail() + " is incorrect");
+                    "The password is incorrect");
         }
         var accessToken = jwtService.generateToken(userBDD);
         var refreshToken = jwtService.generateRefreshToken(userBDD);
